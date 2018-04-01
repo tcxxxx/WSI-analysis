@@ -7,4 +7,4 @@ Whole-slide images(WSI) are gigapixel high-resolution histopathology images. Tra
 </div>
 
 ### Overview <br>
-This repo contains codes for WSI preprocessing. (Codes for classification and segmentation will be added when they are ready:) )
+This repo contains codes for simple WSI preprocessing. (Codes for classification and segmentation will be added when they are ready:) )

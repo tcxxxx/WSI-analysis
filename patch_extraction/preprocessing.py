@@ -1,3 +1,7 @@
+'''
+    Written in Python 3.5
+'''
+
 import time
 import random
 import os

@@ -26,13 +26,13 @@ PIXEL_TH = 200
 PIXEL_BLACK = 0
 
 '''
-    Load slides into memory
+    Load slides into memory.
 '''
 def read_wsi(tif_file_path, level):
     
-    """
+    '''
         Identify and load slides.
-    """
+    '''
     
     time_s = time.time()
     
@@ -74,4 +74,23 @@ def read_wsi(tif_file_path, level):
     print("Time spent on loading", tif_file_path, ": ", (time_e - time_s))
     
     return wsi_image, rgb_image, (slide_w_, slide_h_)
+
+'''
+    Convert RGBA to RGB, HSV and GRAY.
+'''
+def construct_colored_wsi(rgba_):
+
+    '''
+        This function splits and merges R, G, B channels.
+        HSV and GRAY images are also created for future segmentation procedure.
+    '''
+    r_, g_, b_, a_ = cv2.split(rgba_)
+    
+    wsi_rgb_ = cv2.merge((r_, g_, b_))
+    
+    wsi_gray_ = cv2.cvtColor(wsi_rgb_,cv2.COLOR_BGR2GRAY)
+    wsi_hsv_ = cv2.cvtColor(wsi_rgb_, cv2.COLOR_BGR2HSV)
+    
+    return wsi_rgb_, wsi_gray_, wsi_hsv_
+
 

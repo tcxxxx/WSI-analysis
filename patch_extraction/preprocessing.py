@@ -235,6 +235,13 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
 def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE):
     
     '''
+    Args:
+        To-do 
+
+    Returns: 
+        - patches: lists of patches in numpy array: [PATCH_WIDTH, PATCH_HEIGHT, CHANNEL]
+        - patches_coords: coordinates of patches: (x_min, y_min). The bouding box of the patch
+        is (x_min, y_min, x_min + PATCH_WIDTH, y_min + PATCH_HEIGHT)
     '''
 
     patches = []
@@ -336,3 +343,69 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
     print("Total number of patches extracted:", len(patches))
     
     return patches, patches_coords
+
+'''
+    Save patches to disk.
+'''
+def save_to_disk(patches, patches_coords, mask, slide_, level):
+    
+    '''
+        The paths should be changed
+    '''
+    
+    case_name = slide_.split('/')[-1].split('.')[0]
+    prefix_dir = './dataset_patches/' + case_name + '/level' + str(level) + '/' 
+    patch_array_dst = './dataset_patches/' + case_name + '/level' + str(level) + '/patches/'
+    
+    patch_coords_dst = './dataset_patches/' + case_name + '/level' + str(level) + '/'
+    array_file = patch_array_dst + 'patch_'
+    
+    coords_file = patch_coords_dst + 'patch_coords.csv'
+    mask_file = patch_coords_dst + 'mask'
+
+    if not os.path.exists(patch_array_dst):
+        os.makedirs(patch_array_dst)
+        print('mkdir', patch_array_dst)
+
+    if not os.path.exists(prefix_dir):
+        os.makedirs(prefix_dir)
+        print('mkdir', prefix_dir)
+    
+    print('Path: ', array_file)
+    print('Path: ', coords_file)
+    print('Path: ', mask_file)
+    print('Number of patches: ', len(patches_coords))
+    print(patches_coords[:5])
+    
+    '''
+        Save coordinates to the disk. Here we use pandas DataFrame to organize 
+        and save coordinates.
+    '''
+
+    df1_ = pd.DataFrame([x[0] for x in patches_coords], columns = ["coord_x"])
+    df1_["coord_y"] = [y[1] for y in patches_coords]
+    df1_.to_csv(coords_file, encoding='utf-8', index=False)
+    
+    '''
+    Save patch arrays to the disk
+    '''
+    # patch_whole = np.array(patches1).shape
+
+    for i, patch_ in enumerate(patches):
+        x_, y_ = patches_coords[i]
+        patch_name = array_file + str(i) + '_' + str(x_) + '_' + str(y_)
+        
+        np.save(patch_name, np.array(patch_))
+        im = Image.fromarray(patch_)
+        im.save(patch_name + '.jpeg')
+        
+    # Save whole patches: convert list of patches to array.
+    # shape: (NUMBER_OF_PATCHES, PATCH_WIDTH, PATCH_HEIGHT, CHANNEL)
+
+    patch_whole = prefix_dir + 'patch_whole'
+    np.save(patch_whole, np.array(patches))
+    
+    '''
+    Save mask file to the disk
+    '''
+    np.save(mask_file, mask)

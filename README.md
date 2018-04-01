@@ -19,4 +19,4 @@ The read_region() method in [OpenSlide](http://openslide.org/api/python/) proces
 necessary transformation is needed when we crop patches from WSIs using read_region() method.
 3. **Shape difference between Pillow Image object and NumPy arrays.** <br>
 numpy.asarray() / numpy.array() would switch the position of WIDTH and HEIGHT in shape, and vice versa. 
-If an Image object' shape is (WIDTH, HEIGHT, CHANNEL). The shape will be (HEIGHT, WIDTH, CHANNEL) after the np.asarray() transformation.
+If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT, WIDTH, CHANNEL) after the np.asarray() transformation.

@@ -77,8 +77,8 @@ def read_wsi(tif_file_path, level):
         # Here we load the whole image from (0, 0), so transformation of coordinates 
         # is not skipped.
 
-        rgb_image_pil = wsi_image.read_region((0, 0), level, (slide_w_, slide_h_))
-        print("width, height:", rgb_image_pil.size)
+        rgba_image_pil = wsi_image.read_region((0, 0), level, (slide_w_, slide_h_))
+        print("width, height:", rgba_image_pil.size)
 
         '''
             !!! It should be noted that:
@@ -92,8 +92,8 @@ def read_wsi(tif_file_path, level):
             2. The image here is RGBA image, in which A stands for Alpha channel.
             The A channel is unnecessary for now and could be dropped.
         '''
-        rgb_image = np.asarray(rgb_image_pil)
-        print("transformed:", rgb_image.shape)
+        rgba_image = np.asarray(rgba_image_pil)
+        print("transformed:", rgba_image.shape)
         
     except OpenSlideUnsupportedFormatError:
         print('Exception: OpenSlideUnsupportedFormatError')
@@ -103,7 +103,7 @@ def read_wsi(tif_file_path, level):
     
     print("Time spent on loading", tif_file_path, ": ", (time_e - time_s))
     
-    return wsi_image, rgb_image, (slide_w_, slide_h_)
+    return wsi_image, rgba_image, (slide_w_, slide_h_)
 
 '''
     Convert RGBA to RGB, HSV and GRAY.

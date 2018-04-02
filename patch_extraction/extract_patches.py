@@ -253,8 +253,14 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
 
     start = time.time()
     
+    '''
+        !!! 
+        Currently we select only the first 5 regions, because there are too many small areas and 
+        too many irrelevant would be selected if we extract patches from all regions.
+    '''
     contours_ = sorted(contours, key = cv2.contourArea, reverse = True)
-    
+    contours_ = contours_[:5]
+
     for i, box_ in enumerate(contours_):
 
         box_ = cv2.boundingRect(np.squeeze(box_))
@@ -275,8 +281,13 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
         b_x_end = int(box_[0]) + int(box_[2])
         b_y_end = int(box_[1]) + int(box_[3])
         
-        X = np.arange(b_x_start, b_x_end, step=PATCH_SIZE)
-        Y = np.arange(b_y_start, b_y_end, step=PATCH_SIZE)        
+        '''
+            !!!
+            step size could be tuned for better results.
+        '''
+
+        X = np.arange(b_x_start, b_x_end, step=PATCH_SIZE // 2)
+        Y = np.arange(b_y_start, b_y_end, step=PATCH_SIZE // 2)        
         
         print('ROI length:', len(X), len(Y))
         

@@ -257,6 +257,10 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
         !!! 
         Currently we select only the first 5 regions, because there are too many small areas and 
         too many irrelevant would be selected if we extract patches from all regions.
+
+        And how many regions from which we decide to extract patches is 
+        highly related to the SEGMENTATION results.
+
     '''
     contours_ = sorted(contours, key = cv2.contourArea, reverse = True)
     contours_ = contours_[:5]

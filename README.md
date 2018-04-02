@@ -7,7 +7,7 @@ Whole-slide images(WSI) are gigapixel high-resolution histopathology images. Tra
 </div>
 
 ### Overview <br>
-This repo currently contains codes for patch extraction (from WSI) and will be updated constantly. :) (Codes for classification and segmentation will be added when they are ready)
+This repo currently contains codes for patch extraction (from WSI) and will be updated constantly. :) (Codes for classification and segmentation will be added when they are ready).
 
 #### Patch extraction <br>
 There are several tricky parts when extracting patches from WSIs:
@@ -20,3 +20,4 @@ necessary transformation is needed when we crop patches from WSIs using read_reg
 3. **Shape difference between Pillow Image object and NumPy arrays.** <br>
 numpy.asarray() / numpy.array() would switch the position of WIDTH and HEIGHT in shape, and vice versa. 
 If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT, WIDTH, CHANNEL) after the np.asarray() transformation.
+4. **Magnification level choice** <br>

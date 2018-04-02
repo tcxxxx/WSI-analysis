@@ -1,4 +1,4 @@
-## Patch Extraction ,a.k.a Dataset Praparation <br>
+## Patch Extraction / Dataset Praparation <br>
 Patch extraction is the most important preparatory work when we adopt patch-based methods to analyze WSIs. However, due to the variance among WSIs, this procedure could be rather difficult.<br>
 
 There are several tricky parts when extracting patches from WSIs:

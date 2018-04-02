@@ -11,6 +11,10 @@ necessary transformation is needed when we crop patches from WSIs using read_reg
 3. **Shape difference between Pillow Image object and NumPy arrays.** <br>
 numpy.asarray() / numpy.array() would switch the position of WIDTH and HEIGHT in shape, and vice versa. 
 If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT, WIDTH, CHANNEL) after the np.asarray() transformation.
-4. (To be added)
+4. (problem to be solved) **Magnification level choice**<br>
+Here is an patch-extraction example (performed on one sample from [Camelyon 2017 dataset](https://camelyon17.grand-challenge.org/data/)):
+![slide09-1](http://119.29.151.114/images/level3_patche_extraction.jpeg)
 
 In the **html** and **notebook** files are the example of the pipeline.
+
+----------------------------------------

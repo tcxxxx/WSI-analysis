@@ -13,4 +13,4 @@ numpy.asarray() / numpy.array() would switch the position of WIDTH and HEIGHT in
 If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT, WIDTH, CHANNEL) after the np.asarray() transformation.
 4. (To be added)
 
-Here is an example of the whole pipeline:
+In the **html** and **notebook** files are the example of the pipeline.

@@ -240,7 +240,7 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
     
     '''
     Args:
-        To-do 
+        To-do.
 
     Returns: 
         - patches: lists of patches in numpy array: [PATCH_WIDTH, PATCH_HEIGHT, CHANNEL]
@@ -428,3 +428,48 @@ def save_to_disk(patches, patches_coords, mask, slide_, level):
     Save mask file to the disk
     '''
     np.save(mask_file, mask)
+
+
+'''
+    The whole pipeline of extracting patches.
+'''
+def extract_(slide_, level, mag_factor):
+    '''
+    Args:
+        slide_: path to target slide.
+        level: magnification level. 
+        mag_factor: pow(2, level).
+
+    Returns: 
+        To-do.
+    '''
+
+    start = time.time()
+    
+    wsi_, rgba_, shape_ = read_wsi(slide_, level)
+    wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba3_)
+
+    print('Transformed shape: (height, width, channel)')
+    print("WSI HSV shape: ", wsi_hsv_.shape)
+    print("WSI RGB shape: ", wsi_rgb_.shape)
+    print("WSI GRAY shape: ", wsi_gray_.shape)
+    print('\n')
+
+    del rgba_
+    gc.collect()
+
+    bounding_boxes, contour_coords, contours, mask \
+    = segmentation_hsv(wsi_hsv_, wsi_rgb_)
+
+    del wsi_hsv_
+    gc.collect()
+
+    patches, patches_coords = construct_bags(wsi_, wsi_rgb_, contours, mask, \
+                                            level, mag_factor, PATCH_SIZE)
+
+    # save_to_disk(patches, patches_coords, mask, slide_, level)
+    
+    end = time.time()
+    print("Time spent on patch extraction: ",  (end - start))
+    
+    return patches, patches_coords, mask

@@ -15,4 +15,4 @@ If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT
 Below is an patch-extraction example (performed on one sample from [Camelyon 2017 dataset](https://camelyon17.grand-challenge.org/data/)). Red boxes are selected patches and green ones annotated tumor areas. As we can see, when we extract 500 x 500 patches from a WSI in **level3** scale, the portion of tumor areas are too small, which means discriminative information could be significantly diluted if we use all these selected patches to train CNN. <br>This urges us to use smaller magnification level (higher resolution scale).
 ![slide09-1](http://119.29.151.114/images/level3_patche_extraction.jpeg)
 
-In the **html** and **notebook** files of this directory is an example of the patch-extraction pipeline.
+(Here)[http://119.29.151.114/patch_extraction_level3example.html] is an example of the patch-extraction pipeline. Jupyter notebook file is also available in this directory. 

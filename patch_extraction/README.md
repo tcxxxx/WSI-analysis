@@ -16,3 +16,11 @@ Below is an patch-extraction example (performed on one sample from [Camelyon 201
 ![slide09-1](http://119.29.151.114/images/level3_patche_extraction.jpeg)
 
 [Here](http://119.29.151.114/patch_extraction_level3example.html) is an example of the patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
+
+
+-----------------------------------------------
+### References / Helpful links:
+1. [Drawing contours with OpenCV Python](https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_contours/py_table_of_contents_contours/py_table_of_contents_contours.html)
+2. [Camelyon 2017 Grand Challenge](https://camelyon17.grand-challenge.org/)
+3. [Camelyon 2016 Grand Challenge](https://camelyon16.grand-challenge.org/)
+4. [State-of-the-art patch-based strategy for WSI analysis](https://arxiv.org/pdf/1504.07947.pdf)

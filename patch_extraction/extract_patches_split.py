@@ -134,6 +134,7 @@ def read_wsi(wsi_obj, level, mag_factor, sect):
     rgba_image_pil = wsi_obj.read_region((delta_x * mag_factor, \
                                           delta_y * mag_factor), \
                                           level, (width_split, height_split))
+
     print("width, height:", rgba_image_pil.size)
 
     '''
@@ -434,20 +435,25 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
 '''
     Save patches to disk.
 '''
-def save_to_disk(patches, patches_coords, mask, slide_, level):
+def save_to_disk(patches, patches_coords, mask, slide_, level, current_section):
     
     '''
         The paths should be changed
     '''
     
     case_name = slide_.split('/')[-1].split('.')[0]
-    prefix_dir = './dataset_patches/' + case_name + '/level' + str(level) + '/' 
-    patch_array_dst = './dataset_patches/' + case_name + '/level' + str(level) + '/patches/'
-    
-    patch_coords_dst = './dataset_patches/' + case_name + '/level' + str(level) + '/'
+
+    prefix_dir = './dataset_patches/' + case_name + \
+                 '/level' + str(level) + '/' + current_section + '/'
+
+    patch_array_dst = './dataset_patches/' + case_name + \
+                      '/level' + str(level) + '/' + current_section + '/patches/' 
+
+    patch_coords_dst = './dataset_patches/' + case_name + \
+                       '/level' + str(level) + '/' + current_section + '/'
     array_file = patch_array_dst + 'patch_'
     
-    coords_file = patch_coords_dst + 'patch_coords.csv'
+    coords_file = patch_coords_dst + 'patch_coords' + current_section + '.csv'
     mask_file = patch_coords_dst + 'mask'
 
     if not os.path.exists(patch_array_dst):
@@ -489,7 +495,7 @@ def save_to_disk(patches, patches_coords, mask, slide_, level):
     # Save whole patches: convert list of patches to array.
     # shape: (NUMBER_OF_PATCHES, PATCH_WIDTH, PATCH_HEIGHT, CHANNEL)
 
-    patch_whole = prefix_dir + 'patch_whole'
+    patch_whole = prefix_dir + 'patch_whole' + current_section
     np.save(patch_whole, np.array(patches))
     
     '''

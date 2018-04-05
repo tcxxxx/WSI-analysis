@@ -13,7 +13,7 @@ This repo currently contains codes for patch extraction (from WSI) and will be u
 There are several tricky parts when extracting patches from WSIs:
 1. **Memory limit.** <br>
 The RAM size of our lab is 31 GB, and it could hardly hold a level0 WSI. So be careful when loading the whole image.<br>
-It is also helpful to use **del** and **gc.collect()** to free up memory.
+It is also helpful to use **del** and **gc.collect()** to free up memory.<br>And in order to process level0/1/2 WSIs, we need to split the original image up. 
 2. **Coordinates scaling level/reference frame.** <br>
 The read_region() method in [OpenSlide](http://openslide.org/api/python/) processes WSIs in level 0 reference frame. So
 necessary transformation is needed when we crop patches from WSIs using read_region() method.

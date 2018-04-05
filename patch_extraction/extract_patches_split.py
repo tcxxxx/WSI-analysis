@@ -131,8 +131,8 @@ def read_wsi(wsi_obj, level, mag_factor, sect):
         Be aware that the first arg of read_region is a tuple of coordinates in 
         level0 reference frame.
     '''
-    rgba_image_pil = wsi_obj.read_region((delta_x * width_split * mag_factor, \
-                                          delta_y * height_split * mag_factor), \
+    rgba_image_pil = wsi_obj.read_region((delta_x * mag_factor, \
+                                          delta_y * mag_factor), \
                                           level, (width_split, height_split))
     print("width, height:", rgba_image_pil.size)
 

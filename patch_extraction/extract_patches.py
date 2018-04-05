@@ -353,11 +353,12 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
                     '''
 
                     if white_pixel_cnt >= ((PATCH_SIZE ** 2) * 0.25):
-
-                        patches.append(patch_arr)
-                        patches_coords.append((x_width_, y_height_))
-                        print(x_width_, y_height_)
-                        print('Saved\n')
+                        
+                        if patch_arr.shape == (PATCH_SIZE, PATCH_SIZE, CHANNEL):
+                            patches.append(patch_arr)
+                            patches_coords.append((x_width_, y_height_))
+                            print(x_width_, y_height_)
+                            print('Saved\n')
 
                     else:
                         print('Did not save\n')

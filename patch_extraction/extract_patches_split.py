@@ -507,7 +507,7 @@ def save_to_disk(patches, patches_coords, mask, slide_, level, current_section):
 '''
     The whole pipeline of extracting patches.
 '''
-def extract_(slide_path, level, mag_factor):
+def extract_all(slide_path, level, mag_factor):
     '''
     Args:
         slide_: path to target slide.
@@ -518,10 +518,10 @@ def extract_(slide_path, level, mag_factor):
         To-do.
     '''
     
-    sect_list = ['00', '01', '02', '03',\
-                 '10', '11', '12', '13',\
-                 '20', '21', '22', '23',\
-                 '30', '31', '32', '33']
+    section_list = ['00', '01', '02', '03',\
+                    '10', '11', '12', '13',\
+                    '20', '21', '22', '23',\
+                    '30', '31', '32', '33']
 
     patches_all = list()
 
@@ -569,4 +569,3 @@ def extract_(slide_path, level, mag_factor):
     
     return patches_all
 
-    

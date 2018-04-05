@@ -553,8 +553,8 @@ def extract_all(slide_path, level, mag_factor):
 
         patches, patches_coords = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
                                                 level, mag_factor, PATCH_SIZE, sect)
-
-        patche_all.append(patches)
+        if len(patches):
+            patches_all.append(patches)
         
         del wsi_rgb_
         gc.collect()

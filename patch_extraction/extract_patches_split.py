@@ -55,7 +55,7 @@ mag_factor = pow(2, level)
     transformation is needed when invoking read_region().
 '''
 
-def OpenSlide_init(tif_file_path, level):
+def openSlide_init(tif_file_path, level):
     '''
         Identifies the slide and initializes OpenSlide object.
     '''
@@ -153,7 +153,7 @@ def read_wsi(wsi_obj, level, mag_factor, sect):
 
     time_e = time.time()
     
-    print("Time spent on loading", tif_file_path, ": ", (time_e - time_s))
+    print("Time spent on loading: ", (time_e - time_s))
     
     return rgba_image
 

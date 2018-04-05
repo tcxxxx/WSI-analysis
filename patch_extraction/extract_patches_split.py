@@ -507,7 +507,7 @@ def save_to_disk(patches, patches_coords, mask, slide_, level, current_section):
 '''
     The whole pipeline of extracting patches.
 '''
-def extract_(slide_, level, mag_factor):
+def extract_(slide_path, level, mag_factor):
     '''
     Args:
         slide_: path to target slide.
@@ -517,33 +517,56 @@ def extract_(slide_, level, mag_factor):
     Returns: 
         To-do.
     '''
-
-    start = time.time()
     
-    wsi_, rgba_, shape_ = read_wsi(slide_, level)
-    wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba3_)
+    sect_list = ['00', '01', '02', '03',\
+                 '10', '11', '12', '13',\
+                 '20', '21', '22', '23',\
+                 '30', '31', '32', '33']
 
-    print('Transformed shape: (height, width, channel)')
-    print("WSI HSV shape: ", wsi_hsv_.shape)
-    print("WSI RGB shape: ", wsi_rgb_.shape)
-    print("WSI GRAY shape: ", wsi_gray_.shape)
-    print('\n')
+    patches_all = list()
 
-    del rgba_
-    gc.collect()
+    wsi_obj=openSlide_init(slide_path, level)
 
-    bounding_boxes, contour_coords, contours, mask \
-    = segmentation_hsv(wsi_hsv_, wsi_rgb_)
+    time_all = 0
 
-    del wsi_hsv_
-    gc.collect()
+    for sect in section_list:
+        
+        start = time.time()
 
-    patches, patches_coords = construct_bags(wsi_, wsi_rgb_, contours, mask, \
-                                            level, mag_factor, PATCH_SIZE)
+        rgba_image = read_wsi(wsi_obj, level, mag_factor, sect)
+        wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_image)
 
-    # save_to_disk(patches, patches_coords, mask, slide_, level)
+        print('Transformed shape: (height, width, channel)')
+        print("WSI HSV shape: ", wsi_hsv_.shape)
+        print("WSI RGB shape: ", wsi_rgb_.shape)
+        print("WSI GRAY shape: ", wsi_gray_.shape)
+        print('\n')
+
+        del rgba_image
+        gc.collect()
+
+        bounding_boxes, contour_coords, contours, mask \
+        = segmentation_hsv(wsi_hsv_, wsi_rgb_)
+
+        del wsi_hsv_
+        gc.collect()
+
+        patches, patches_coords = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
+                                                level, mag_factor, PATCH_SIZE, sect)
+
+        patche_all.append(patches)
+        
+        del wsi_rgb_
+        gc.collect()
+
+        save_to_disk(patches, patches_coords, mask, slide_, level, sect)
+        
+        end = time.time()
+        time_all += end - start
+        print("Time spent on section", sect,  (end - start))
     
-    end = time.time()
-    print("Time spent on patch extraction: ",  (end - start))
+    print('total time: ', time_all)    
     
-    return patches, patches_coords, mask
+    return patches_all
+
+    

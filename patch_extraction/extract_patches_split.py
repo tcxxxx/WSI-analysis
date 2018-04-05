@@ -413,13 +413,14 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
                         valid and selected.
                     '''
 
-                    if white_pixel_cnt >= ((PATCH_SIZE ** 2) * 0.25):
-
-                        patches.append(patch_arr)
-                        patches_coords.append((x_width_ + delta_x , 
-                                               y_height_ + delta_y))
-                        print(x_width_, y_height_)
-                        print('Saved\n')
+                    if white_pixel_cnt >= ((PATCH_SIZE ** 2) * 0.5):
+                        
+                        if patch_arr.shape == (PATCH_SIZE, PATCH_SIZE, CHANNEL):
+                            patches.append(patch_arr)
+                            patches_coords.append((x_width_ + delta_x , 
+                                                   y_height_ + delta_y))
+                            print(x_width_, y_height_)
+                            print('Saved\n')
 
                     else:
                         print('Did not save\n')

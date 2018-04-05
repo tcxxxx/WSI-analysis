@@ -414,7 +414,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
                     '''
 
                     if white_pixel_cnt >= ((PATCH_SIZE ** 2) * 0.5):
-                        
+
                         if patch_arr.shape == (PATCH_SIZE, PATCH_SIZE, CHANNEL):
                             patches.append(patch_arr)
                             patches_coords.append((x_width_ + delta_x , 
@@ -556,11 +556,12 @@ def extract_all(slide_path, level, mag_factor):
                                                 level, mag_factor, PATCH_SIZE, sect)
         if len(patches):
             patches_all.append(patches)
-        
-        del wsi_rgb_
-        gc.collect()
+            save_to_disk(patches, patches_coords, mask, slide_path, level, sect)
 
-        save_to_disk(patches, patches_coords, mask, slide_path, level, sect)
+        del wsi_rgb_
+        del patches
+        del mask
+        gc.collect()
         
         end = time.time()
         time_all += end - start

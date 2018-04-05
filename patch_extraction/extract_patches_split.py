@@ -35,7 +35,7 @@ PIXEL_BLACK = 0
 '''
 SPLIT = 4
 
-level = 3
+level = 1
 mag_factor = pow(2, level)
 
 '''
@@ -55,64 +55,107 @@ mag_factor = pow(2, level)
     transformation is needed when invoking read_region().
 '''
 
+def OpenSlide_init(tif_file_path, level):
+    '''
+        Identifies the slide and initializes OpenSlide object.
+    '''
+    try:
+        wsi_obj = OpenSlide(tif_file_path)
+
+    except OpenSlideUnsupportedFormatError:
+        print('Exception: OpenSlideUnsupportedFormatError')
+        return None
+    else:
+        slide_w_, slide_h_ = wsi_obj.level_dimensions[level]
+        print('level' + str(level), 'size(w, h):', slide_w_, slide_h_)
+        
+        return wsi_obj
+
 '''
-    Load slides into memory.
+    Load selected parts of the slides into memory.
 '''
-def read_wsi(tif_file_path, level):
+def read_wsi(wsi_obj, level, mag_factor, sect):
     
     '''
         Identify and load slides.
+        Args:
+            wsi_obj: OpenSlide object;
+            level: magnification level;
+            mag_factor: pow(2, level);
+            sect: string, indicates which part of the WSI. For example:
+            sect='12':
+             _ _ _ _
+            |_|_|_|_|                  
+            |_|_|_|_|
+            |_|*|_|_|
+            |_|_|_|_|   
+            
+            '01':
+             _ _ _ _
+            |_|_|_|_|                  
+            |*|_|_|_|
+            |_|_|_|_|
+            |_|_|_|_| 
+
         Returns:
-            - wsi_image: OpenSlide object.
             - rgba_image: WSI image loaded, NumPy array type.
     '''
     
     time_s = time.time()
-    
-    try:
-        wsi_image = OpenSlide(tif_file_path)
-        slide_w_, slide_h_ = wsi_image.level_dimensions[level]
-        
-        '''
-            The read_region loads the target area into RAM memory, and
-            returns an Pillow Image object.
+            
+    '''
+        The read_region loads the target area into RAM memory, and
+        returns an Pillow Image object.
 
-            !! Take care because WSIs are gigapixel images, which are could be 
-            extremely large to RAMs.
+        !! Take care because WSIs are gigapixel images, which are could be 
+        extremely large to RAMs.
 
-            Load the whole image in level < 3 could cause failures.
-        '''
+        Load the whole image in level < 3 could cause failures.
+    '''
 
-        # Here we load the whole image from (0, 0), so transformation of coordinates 
-        # is not skipped.
+    # Here we load the whole image from (0, 0), so transformation of coordinates 
+    # is not skipped.
 
-        rgba_image_pil = wsi_image.read_region((0, 0), level, (slide_w_, slide_h_))
-        print("width, height:", rgba_image_pil.size)
+    # level1 dimension
+    width_whole, height_whole = wsi_obj.level_dimensions[level]
+    print(width_whole, height_whole)
 
-        '''
-            !!! It should be noted that:
-            1. np.asarray() / np.array() would switch the position 
-            of WIDTH and HEIGHT in shape.
+    # section size after split
+    width_split, height_split = width_whole // SPLIT, height_whole // SPLIT
+    print(width_split, height_split)
 
-            Here, the shape of $rgb_image_pil is: (WIDTH, HEIGHT, CHANNEL).
-            After the np.asarray() transformation, the shape of $rgb_image is: 
-            (HEIGHT, WIDTH, CHANNEL).
+    delta_x = int(sect[0]) * width_split
+    delta_y = int(sect[1]) * height_split
 
-            2. The image here is RGBA image, in which A stands for Alpha channel.
-            The A channel is unnecessary for now and could be dropped.
-        '''
-        rgba_image = np.asarray(rgba_image_pil)
-        print("transformed:", rgba_image.shape)
-        
-    except OpenSlideUnsupportedFormatError:
-        print('Exception: OpenSlideUnsupportedFormatError')
-        return None
+    '''
+        Be aware that the first arg of read_region is a tuple of coordinates in 
+        level0 reference frame.
+    '''
+    rgba_image_pil = wsi_obj.read_region((delta_x * width_split * mag_factor, \
+                                          delta_y * height_split * mag_factor), \
+                                          level, (width_split, width_split))
+    print("width, height:", rgba_image_pil.size)
+
+    '''
+        !!! It should be noted that:
+        1. np.asarray() / np.array() would switch the position 
+        of WIDTH and HEIGHT in shape.
+
+        Here, the shape of $rgb_image_pil is: (WIDTH, HEIGHT, CHANNEL).
+        After the np.asarray() transformation, the shape of $rgb_image is: 
+        (HEIGHT, WIDTH, CHANNEL).
+
+        2. The image here is RGBA image, in which A stands for Alpha channel.
+        The A channel is unnecessary for now and could be dropped.
+    '''
+    rgba_image = np.asarray(rgba_image_pil)
+    print("transformed:", rgba_image.shape)
 
     time_e = time.time()
     
     print("Time spent on loading", tif_file_path, ": ", (time_e - time_s))
     
-    return wsi_image, rgba_image, (slide_w_, slide_h_)
+    return rgba_image
 
 '''
     Convert RGBA to RGB, HSV and GRAY.

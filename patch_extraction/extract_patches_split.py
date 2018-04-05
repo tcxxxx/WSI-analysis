@@ -292,7 +292,7 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
 '''
     Extract Valid patches.
 '''
-def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE):
+def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE, sect):
     
     '''
     Args:
@@ -309,6 +309,17 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
 
     start = time.time()
     
+    # level1 dimension
+    width_whole, height_whole = wsi_obj.level_dimensions[level]
+    width_split, height_split = width_whole // SPLIT, height_whole // SPLIT
+    # print(width_whole, height_whole)
+
+    # section size after split
+    print(int(sect[0]), int(sect[1]))
+    delta_x = int(sect[0]) * width_split
+    delta_y = int(sect[1]) * height_split
+    print("delta:", delta_x, delta_y)
+
     '''
         !!! 
         Currently we select only the first 5 regions, because there are too many small areas and 
@@ -404,7 +415,8 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
                     if white_pixel_cnt >= ((PATCH_SIZE ** 2) * 0.25):
 
                         patches.append(patch_arr)
-                        patches_coords.append((x_width_, y_height_))
+                        patches_coords.append((x_width_ + delta_x , 
+                                               y_height_ + delta_y))
                         print(x_width_, y_height_)
                         print('Saved\n')
 

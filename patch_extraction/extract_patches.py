@@ -56,6 +56,9 @@ def read_wsi(tif_file_path, level):
     
     '''
         Identify and load slides.
+        Returns:
+            - wsi_image: OpenSlide object.
+            - rgba_image: WSI image loaded, NumPy array type.
     '''
     
     time_s = time.time()
@@ -113,6 +116,10 @@ def construct_colored_wsi(rgba_):
     '''
         This function splits and merges R, G, B channels.
         HSV and GRAY images are also created for future segmentation procedure.
+
+        Args:
+            - rgba_: Image to be processed, NumPy array type.
+
     '''
     r_, g_, b_, a_ = cv2.split(rgba_)
     

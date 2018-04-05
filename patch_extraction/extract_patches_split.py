@@ -559,7 +559,7 @@ def extract_all(slide_path, level, mag_factor):
         del wsi_rgb_
         gc.collect()
 
-        save_to_disk(patches, patches_coords, mask, slide_, level, sect)
+        save_to_disk(patches, patches_coords, mask, slide_path, level, sect)
         
         end = time.time()
         time_all += end - start

@@ -1,6 +1,10 @@
 ## Patch Extraction / Dataset Praparation <br>
 Patch extraction is the most important preparatory work when we adopt patch-based methods to analyze WSIs. However, due to the variance among WSIs, this procedure could be rather difficult.<br>
 
+Currently, there are two files in the directory:
+- extract_patches.py: includes processing functions for WSIs of which **level >= 3**;
+- extract_patches_split.py: includes processing functions for WSIs of which **level <= 2** (We will split the whole WSI images first and process the sections in turn);<br>
+
 There are several tricky parts when extracting patches from WSIs:
 1. **Memory limit.** <br>
 The RAM size of our lab is 31 GB, and it could hardly hold a level0 WSI. So be careful when loading the whole image.<br>

@@ -19,7 +19,7 @@ import matplotlib.patches as patches
 from ast import literal_eval
 
 def calculate_polygon(poly_, start_x, start_y, patch_width, 
-                      patch_height, MultiPolygon_flag):
+                      patch_height, MultiPolygon_flag, draw=False):
     
     """Calculates the area of intersection one polygon area.
     
@@ -87,49 +87,50 @@ def calculate_polygon(poly_, start_x, start_y, patch_width,
     '''
         
     if not MultiPolygon_flag:
-        
-        fig = plt.figure(1, figsize=(7,7))
-        ax = fig.add_subplot(111)
-        ax.plot(x_, y_)
+        if draw:
+	        fig = plt.figure(1, figsize=(7,7))
+	        ax = fig.add_subplot(111)
+	        ax.plot(x_, y_)
 
         bound_width = abs(poly_.bounds[2] - poly_.bounds[0])
         bound_height = abs(poly_.bounds[3] - poly_.bounds[1])
 
-        ax.add_patch(
-        patches.Rectangle(
-            (poly_.bounds[0], poly_.bounds[1]),              # (x,y)
-            bound_width,          # width
-            bound_height,          # height
-            fill=False,
-            linestyle='dashdot'
-            )
-        )
+        if draw:
+	        ax.add_patch(
+	        patches.Rectangle(
+	            (poly_.bounds[0], poly_.bounds[1]),              # (x,y)
+	            bound_width,          # width
+	            bound_height,          # height
+	            fill=False,
+	            linestyle='dashdot'
+	            )
+	        )
 
-        ax.add_patch(
-        patches.Rectangle(
-            (start_x, start_y),     # (x,y)
-            patch_width,              # width
-            patch_height,
-            fill=False,
-            edgecolor="yellow"
-            )
-        )
+	        ax.add_patch(
+	        patches.Rectangle(
+	            (start_x, start_y),     # (x,y)
+	            patch_width,              # width
+	            patch_height,
+	            fill=False,
+	            edgecolor="yellow"
+	            )
+	        )
 
-        # if not isect_x == -1:
-        if intersection_.geom_type == 'MultiPolygon':
-            for part_ in intersection_:
-                isect_x, isect_y = part_.exterior.coords.xy
-                ax.plot(isect_x, isect_y, color='tab:orange')
+	        # if not isect_x == -1:
+	        if intersection_.geom_type == 'MultiPolygon':
+	            for part_ in intersection_:
+	                isect_x, isect_y = part_.exterior.coords.xy
+	                ax.plot(isect_x, isect_y, color='tab:orange')
 
-        elif intersection_.geom_type == 'Polygon':
-            ax.plot(isect_x, isect_y, color='tab:orange')
+	        elif intersection_.geom_type == 'Polygon':
+	            ax.plot(isect_x, isect_y, color='tab:orange')
 
-        plt.axis('scaled')
-        plt.show()
+	        plt.axis('scaled')
+	        plt.show()
     
     return inter_area, isect_
 
-def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_height=500):
+def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_height=500, draw=False):
     
     """Calculates the whole intersection area (patch ∩ tumor area).
     
@@ -170,18 +171,18 @@ def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_heigh
         
         multi_list_ = []
 
-        #       
-        fig = plt.figure(2, figsize=(7,7))
-        ax_ = fig.add_subplot(111)
-        ax_.add_patch(
-        patches.Rectangle(
-            (start_x, start_y),     # (x,y)
-            patch_width,              # width
-            patch_height,
-            fill=False,
-            edgecolor="yellow"
-            )
-        )
+        if draw:       
+	        fig = plt.figure(2, figsize=(7,7))
+	        ax_ = fig.add_subplot(111)
+	        ax_.add_patch(
+	        patches.Rectangle(
+	            (start_x, start_y),     # (x,y)
+	            patch_width,              # width
+	            patch_height,
+	            fill=False,
+	            edgecolor="yellow"
+	            )
+	        )
         
         bound_x_min = 0
         bound_y_min = 0
@@ -216,33 +217,35 @@ def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_heigh
             else:
                 if bound_y_max < poly_i.bounds[3]:
                     bound_y_max = poly_i.bounds[3]
-                
-            x_, y_ = poly_i.exterior.coords.xy
-            ax_.plot(x_, y_, color='tab:blue')
+            
+            if draw:    
+            	x_, y_ = poly_i.exterior.coords.xy
+            	ax_.plot(x_, y_, color='tab:blue')
             
             inter_area += inter_area_i
             
             for isect_part in isect_i:
                 isect_.append(isect_part)
-        
-        for _ in isect_:
-            ax_.plot(_['X'], _['Y'], color='tab:orange')
-        
+
         bound_width = abs(bound_x_max - bound_x_min)
         bound_height = abs(bound_y_max - bound_y_min)
-        
-        ax_.add_patch(
-        patches.Rectangle(
-            (bound_x_min, bound_y_min),              # (x,y)
-            bound_width,          # width
-            bound_height,          # height
-            fill=False,
-            linestyle='dashdot'
-            )
-        )
-        
-        plt.axis('scaled')
-        plt.show()
+
+        if draw:        
+	        for _ in isect_:
+	            ax_.plot(_['X'], _['Y'], color='tab:orange')
+	        
+	        ax_.add_patch(
+	        patches.Rectangle(
+	            (bound_x_min, bound_y_min),              # (x,y)
+	            bound_width,          # width
+	            bound_height,          # height
+	            fill=False,
+	            linestyle='dashdot'
+	            )
+	        )
+	        
+	        plt.axis('scaled')
+	        plt.show()
         
     elif poly_.geom_type == "Polygon":
         inter_area, isect_ = calculate_polygon(poly_, start_x, start_y, 

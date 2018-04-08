@@ -568,9 +568,17 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
 
     df1_ = pd.DataFrame([coord[0] for coord in patches_coords], columns = ["coord_x"])
     df1_["coord_y"] = [coord[1] for coord in patches_coords]
-    df1_["tumor_area"] = [tumor_dict[coord] for coord in patches_coords]
     
-    df1_["tumor_%"] = [tumor_dict[coord] / (PATCH_SIZE * PATCH_SIZE) \
+    if tumor_dict == None:
+        
+        df1_["tumor_area"] = [0 for coord in patches_coords]
+    
+        df1_["tumor_%"] = [0 for coord in patches_coords]
+    
+    else:
+        df1_["tumor_area"] = [tumor_dict[coord] for coord in patches_coords]
+    
+        df1_["tumor_%"] = [tumor_dict[coord] / (PATCH_SIZE * PATCH_SIZE) \
                        for coord in patches_coords]
     df1_.to_csv(coords_file, encoding='utf-8', index=False)
     
@@ -601,13 +609,13 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
 '''
     The whole pipeline of extracting patches.
 '''
-def extract_all(slide_path, level, mag_factor):
+def extract_all(slide_path, level, mag_factor, pnflag=True):
     '''
     Args:
-        slide_: path to target slide.
-        level: magnification level. 
-        mag_factor: pow(2, level).
-
+        slide_: Path to target slide.
+        level: Magnification level. 
+        mag_factor: Pow(2, level).
+        pnflag: Boolean variable, which indicates whether it is a positive one or not
     Returns: 
         To-do.
     '''
@@ -621,9 +629,10 @@ def extract_all(slide_path, level, mag_factor):
 
     wsi_obj=openSlide_init(slide_path, level)
 
-    polygon_list, anno_list, anno_local_list = \
-    parse_annotation(anno_path + anno_sample, wsi_obj, \
-                     sect, level, mag_factor)
+    if pnflag:
+        polygon_list, anno_list, anno_local_list = \
+        parse_annotation(anno_path + anno_sample, wsi_obj, \
+                         sect, level, mag_factor)
 
     time_all = 0
 
@@ -653,10 +662,12 @@ def extract_all(slide_path, level, mag_factor):
         = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
                         level, mag_factor, PATCH_SIZE, sect)
         
-        tumor_dict = calc_tumorArea(polygon_list, patches_coords)
-        
         if len(patches):
             patches_all.append(patches)
+            if pnflag:
+                tumor_dict = calc_tumorArea(polygon_list, patches_coords)
+            else:
+                tumor_dict = None
             save_to_disk(patches, patches_coords, tumor_dict, mask, \
                          slide_path, level, sect)
 

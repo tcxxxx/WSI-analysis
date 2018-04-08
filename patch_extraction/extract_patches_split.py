@@ -445,12 +445,14 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
 Parse annotation
 '''
 def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
+    
     '''
     Args:
 
     Returns:
         
     '''
+
     polygon_list = list()
     anno_list = list()
     anno_local_list = list()
@@ -502,10 +504,10 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
             '''
             local_x = x - delta_x
             if local_x < 0:
-                local_x = 1
+                local_x = -1
             local_y = y - delta_y
             if local_y < 0:
-                local_y = 1
+                local_y = -1
             node_local_list_.append((local_x, local_y))
         
         anno_list.append(node_list_)
@@ -516,11 +518,6 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
             polygon_list.append(polygon_)
     
     return polygon_list, anno_list, anno_local_list
-
-'''
-Calculate tumor area
-'''
-
 
 '''
     Save patches to disk.

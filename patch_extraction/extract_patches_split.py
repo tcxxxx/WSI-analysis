@@ -568,7 +568,11 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
 
     df1_ = pd.DataFrame([coord[0] for coord in patches_coords], columns = ["coord_x"])
     df1_["coord_y"] = [coord[1] for coord in patches_coords]
+    
+    print(tumor_dict[patches_coords[0]])
+    print(patches_coords[0])
     df1_["tumor_area"] = [tumor_dict[coord] for coord in patches_coords]
+    
     df1_["tumor_%"] = [tumor_dict[coord] / (PATCH_SIZE * PATCH_SIZE) \
                        for coord in patches_coords]
     df1_.to_csv(coords_file, encoding='utf-8', index=False)

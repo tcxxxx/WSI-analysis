@@ -1,7 +1,6 @@
 '''
     Written in Python 3.5
 '''
-
 import time
 import random
 import os
@@ -16,9 +15,6 @@ import xml.etree.cElementTree as ET
 from shapely.geometry import box, Point, Polygon
 
 import gc
-
-from utils import calculate_intersection, calculate_polygon, \
-calc_tumorArea
 
 '''
     Global variables / constants

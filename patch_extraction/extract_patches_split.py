@@ -621,15 +621,15 @@ def extract_all(slide_path, level, mag_factor):
 
     wsi_obj=openSlide_init(slide_path, level)
 
+    polygon_list, anno_list, anno_local_list = \
+    parse_annotation(anno_path + anno_sample, wsi_obj, \
+                     sect, level, mag_factor)
+
     time_all = 0
 
     for sect in section_list:
         
         start = time.time()
-
-        polygon_list, anno_list, anno_local_list = \
-        parse_annotation(anno_path + anno_sample, wsi_obj, \
-                         sect, level, mag_factor)
 
         rgba_image = read_wsi(wsi_obj, level, mag_factor, sect)
         wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_image)
@@ -649,8 +649,9 @@ def extract_all(slide_path, level, mag_factor):
         del wsi_hsv_
         gc.collect()
 
-        patches, patches_coords = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
-                                                level, mag_factor, PATCH_SIZE, sect)
+        patches, patches_coords, patches_coords_local\
+        = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
+                        level, mag_factor, PATCH_SIZE, sect)
         
         tumor_dict = calc_tumorArea(polygon_list, patches_coords)
         

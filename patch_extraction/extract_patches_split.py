@@ -305,8 +305,9 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
         is (x_min, y_min, x_min + PATCH_WIDTH, y_min + PATCH_HEIGHT)
     '''
 
-    patches = []
-    patches_coords = []
+    patches = list()
+    patches_coords = list()
+    patches_coords_local = list()
 
     start = time.time()
     
@@ -419,7 +420,11 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
                             patches.append(patch_arr)
                             patches_coords.append((x_width_ + delta_x , 
                                                    y_height_ + delta_y))
-                            print(x_width_, y_height_)
+
+                            patches_coords_local.append((x_width_, y_height_))
+
+                            print("global:", x_width_ + delta_x, y_height_ + delta_y)
+                            print("local: ", x_width_, y_height_)
                             print('Saved\n')
 
                     else:
@@ -431,7 +436,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
     # patches_ = [patch_[:,:,:3] for patch_ in patches] 
     print("Total number of patches extracted:", len(patches))
     
-    return patches, patches_coords
+    return patches, patches_coords, patches_coords_local
 
 '''
     Save patches to disk.
@@ -519,9 +524,9 @@ def extract_all(slide_path, level, mag_factor):
         To-do.
     '''
     
-    section_list = ['00', '01', '02', '03',\
-                    '10', '11', '12', '13',\
-                    '20', '21', '22', '23',\
+    section_list = ['00', '01', '02', '03', \
+                    '10', '11', '12', '13', \
+                    '20', '21', '22', '23', \
                     '30', '31', '32', '33']
 
     patches_all = list()

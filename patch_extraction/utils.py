@@ -69,15 +69,12 @@ def calculate_polygon(poly_, start_x, start_y, patch_width,
         
         if intersection_.geom_type == 'Polygon':
             isect_x, isect_y = intersection_.exterior.coords.xy
-            # ax.plot(isect_x, isect_y, linestyle='dashed', color = 'r')
             isect_.append({"X": list(isect_x), "Y": list(isect_y)})
             
         elif intersection_.geom_type == 'MultiPolygon':
             for part_ in intersection_:
                 isect_x, isect_y = part_.exterior.coords.xy
-                isect_.append({"X": list(isect_x), "Y": list(isect_y)})
-                # ax.plot(isect_x, isect_y, linestyle='dashed', color = 'r')
-    
+                isect_.append({"X": list(isect_x), "Y": list(isect_y)})   
     else:
         inter_area = 0
         isect_x = -1
@@ -132,7 +129,7 @@ def calculate_polygon(poly_, start_x, start_y, patch_width,
     
     return inter_area, isect_
 
-def calculate_intersection(poly_, start_x, start_y, patch_width=1024, patch_height=1024):
+def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_height=500):
     
     """Calculates the whole intersection area (patch ∩ tumor area).
     
@@ -253,3 +250,4 @@ def calculate_intersection(poly_, start_x, start_y, patch_width=1024, patch_heig
         
     return inter_area, isect_
     #, isect_x, isect_y
+

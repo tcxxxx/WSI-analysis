@@ -254,3 +254,31 @@ def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_heigh
     return inter_area, isect_
     #, isect_x, isect_y
 
+'''
+    Calculate tumor area.
+'''
+def calc_tumorArea(polygon_list, patches_coords):
+    '''
+    '''
+    area_list = dict()
+
+    for coords in patches_coords:
+    
+        x_, y_ = coords
+        
+        area_sum = 0
+
+        for idx_, poly_ in enumerate(polygon_list):
+
+            area_, _ = calculate_intersection(poly_, x_, y_)
+            area_sum += area_
+
+        if int(area_sum) > 0:
+            print((x_, y_), ":", area_sum / (500*500), area_sum)
+            
+            area_list[coords] = int(area_sum)
+
+        else:
+            area_list[coords] = 0
+
+    return area_list

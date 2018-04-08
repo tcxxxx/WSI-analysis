@@ -520,38 +520,9 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
     return polygon_list, anno_list, anno_local_list
 
 '''
-    Calculate tumor area.
-'''
-def calc_tumorArea(polygon_list, patches_coords):
-    '''
-    '''
-    area_list = dict()
-
-    for coords in patches_coords:
-    
-        x_, y_ = coords
-        
-        area_sum = 0
-
-        for idx_, poly_ in enumerate(polygon_list):
-
-            area_, _ = calculate_intersection(poly_, x_, y_)
-            area_sum += area_
-
-        if int(area_sum) > 0:
-            print((x_, y_), ":", area_sum / (500*500), area_sum)
-            
-            area_list[coords] = int(area_sum)
-
-        else:
-            area_list[coords] = 0
-
-    return area_list
-
-'''
     Save patches to disk.
 '''
-def save_to_disk(patches, patches_coords, mask, slide_, level, current_section):
+def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, current_section):
     
     '''
         The paths should be changed
@@ -591,8 +562,10 @@ def save_to_disk(patches, patches_coords, mask, slide_, level, current_section):
         and save coordinates.
     '''
 
-    df1_ = pd.DataFrame([x[0] for x in patches_coords], columns = ["coord_x"])
-    df1_["coord_y"] = [y[1] for y in patches_coords]
+    df1_ = pd.DataFrame([coord[0] for coord in patches_coords], columns = ["coord_x"])
+    df1_["coord_y"] = [coord[1] for coord in patches_coords]
+    df1_["tumor_area"] = [tumor_dict[coord] for coord in patches_coords]
+    df1_["tumor_%"] = [_1[coord] / (PATCH_SIZE * PATCH_SIZE) for coord in patches_coords_01]
     df1_.to_csv(coords_file, encoding='utf-8', index=False)
     
     '''

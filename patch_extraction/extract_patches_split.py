@@ -525,27 +525,28 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
 def calc_tumorArea(polygon_list, patches_coords):
     '''
     '''
-    idx_list = dict()
     area_list = dict()
 
     for coords in patches_coords:
     
         x_, y_ = coords
         
+        area_sum = 0
+
         for idx_, poly_ in enumerate(polygon_list):
+
             area_, _ = calculate_intersection(poly_, x_, y_)
+            area_sum += area_
+
+        if int(area_sum) > 0:
+            print((x_, y_), ":", area_sum / (500*500), area_sum)
             
-            if area_ > 0:
-                print((x_, y_), ":", idx_, area_ / (500*500), area_)
-                
-                idx_list[coords] = idx_
-                area_list[coords] = area_
+            area_list[coords] = int(area_sum)
 
-            else:
-                idx_list[coords] = -1
-                area_list[coords] = 0
+        else:
+            area_list[coords] = 0
 
-    return area_list, idx_list
+    return area_list
 
 '''
     Save patches to disk.

@@ -17,6 +17,9 @@ from shapely.geometry import box, Point, Polygon
 
 import gc
 
+from utils import calculate_intersection, calculate_polygon, \
+calc_tumorArea
+
 '''
     Global variables / constants
 '''
@@ -520,6 +523,11 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
     return polygon_list, anno_list, anno_local_list
 
 '''
+    Draw extracted patches 
+'''
+    
+
+'''
     Save patches to disk.
 '''
 def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, current_section):
@@ -621,6 +629,10 @@ def extract_all(slide_path, level, mag_factor):
         
         start = time.time()
 
+        polygon_list, anno_list, anno_local_list = \
+        parse_annotation(anno_path + anno_sample, wsi_obj, \
+                         sect, level, mag_factor)
+
         rgba_image = read_wsi(wsi_obj, level, mag_factor, sect)
         wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_image)
 
@@ -641,9 +653,13 @@ def extract_all(slide_path, level, mag_factor):
 
         patches, patches_coords = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
                                                 level, mag_factor, PATCH_SIZE, sect)
+        
+        tumor_dict = calc_tumorArea(polygon_list, patches_coords)
+        
         if len(patches):
             patches_all.append(patches)
-            save_to_disk(patches, patches_coords, mask, slide_path, level, sect)
+            save_to_disk(patches, patches_coords, mask, tumor_dict, \
+                         slide_path, level, sect)
 
         del wsi_rgb_
         del patches

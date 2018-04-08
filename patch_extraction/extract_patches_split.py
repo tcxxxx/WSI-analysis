@@ -12,6 +12,9 @@ import pandas as pd
 from PIL import Image
 from openslide import OpenSlide, OpenSlideUnsupportedFormatError
 
+import xml.etree.cElementTree as ET
+from shapely.geometry import box, Point, Polygon
+
 import gc
 
 '''
@@ -437,6 +440,87 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
     print("Total number of patches extracted:", len(patches))
     
     return patches, patches_coords, patches_coords_local
+
+'''
+Parse annotation
+'''
+def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
+    '''
+    Args:
+
+    Returns:
+        
+    '''
+    polygon_list = list()
+    anno_list = list()
+    anno_local_list = list()
+
+    tree = ET.ElementTree(file = anno_path)
+
+    print('parsing annotation xml:')
+
+    width_whole, height_whole = wsi_obj.level_dimensions[level]
+    width_split, height_split = width_whole // SPLIT, height_whole // SPLIT
+    # print(width_whole, height_whole)
+
+    # section size after split
+    print(int(sect[0]), int(sect[1]))
+    delta_x = int(sect[0]) * width_split
+    delta_y = int(sect[1]) * height_split
+    print(delta_x, delta_y)
+
+    for an_i, crds in enumerate(tree.iter(tag='Coordinates')):
+        '''
+            In this loop, we process one seperate area of annotation at a time.
+        '''
+        print(an_i)
+
+        node_list = list()
+
+        node_list_=list()
+        node_local_list_=list()
+
+        for coor in crds:
+            '''
+                Here (x, y) uses global reference in the chosen level, which means
+                (x, y) indicates the location in the whole patch, rather than in splited sections.
+            '''
+            x = int(float(coor.attrib['X']))
+            y = int(float(coor.attrib['Y']))
+            
+            x /= mag_factor
+            y /= mag_factor
+
+            x = int(x)
+            y = int(y)
+
+            node_list.append(Point(x,y))
+            node_list_.append((x,y))
+
+            '''
+                Here we get the local coordinates from the global ones.
+            '''
+            local_x = x - delta_x
+            if local_x < 0:
+                local_x = 1
+            local_y = y - delta_y
+            if local_y < 0:
+                local_y = 1
+            node_local_list_.append((local_x, local_y))
+        
+        anno_list.append(node_list_)
+        anno_local_list.append(node_local_list_)
+
+        if len(node_list_) > 2:
+            polygon_ = Polygon(node_list_)
+            polygon_list.append(polygon_)
+    
+    return polygon_list, anno_list, anno_local_list
+
+'''
+Calculate tumor area
+'''
+
 
 '''
     Save patches to disk.

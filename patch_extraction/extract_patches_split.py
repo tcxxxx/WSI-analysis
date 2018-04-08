@@ -520,6 +520,34 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
     return polygon_list, anno_list, anno_local_list
 
 '''
+    Calculate tumor area.
+'''
+def calc_tumorArea(polygon_list, patches_coords):
+    '''
+    '''
+    idx_list = dict()
+    area_list = dict()
+
+    for coords in patches_coords:
+    
+        x_, y_ = coords
+        
+        for idx_, poly_ in enumerate(polygon_list):
+            area_, _ = calculate_intersection(poly_, x_, y_)
+            
+            if area_ > 0:
+                print((x_, y_), ":", idx_, area_ / (500*500), area_)
+                
+                idx_list[coords] = idx_
+                area_list[coords] = area_
+
+            else:
+                idx_list[coords] = -1
+                area_list[coords] = 0
+
+    return area_list, idx_list
+
+'''
     Save patches to disk.
 '''
 def save_to_disk(patches, patches_coords, mask, slide_, level, current_section):
@@ -589,7 +617,6 @@ def save_to_disk(patches, patches_coords, mask, slide_, level, current_section):
     Save mask file to the disk
     '''
     np.save(mask_file, mask)
-
 
 '''
     The whole pipeline of extracting patches.

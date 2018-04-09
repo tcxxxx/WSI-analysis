@@ -23,8 +23,8 @@ Below is an patch-extraction example (performed on one sample from [Camelyon 201
 
 ----------------------------------------------------------------------------
 ### Examples:
-- [x] [Here](http://119.29.151.114/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
-- [ ] level**1** patch-extraction pipeline will be added very soon.
+- [x] [HERE](http://119.29.151.114/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
+- [x] [HERE](http://119.29.151.114/patch_extraction_level1example.html) is an example of level**1** patch-extraction pipeline. Jupyter notebook file is also available in this directory. <br> It should be noticed that the functions of processing level**1** WSI (in **extract_patches_split.py**) are somewhat different from the ones in **extract_patches.py**, which were designed for images whose level >= 3.
 
 ----------------------------------------------------------------------------
 ### References / Helpful links:

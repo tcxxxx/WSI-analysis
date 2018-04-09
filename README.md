@@ -6,6 +6,8 @@ Whole-slide images(WSI) are gigapixel high-resolution histopathology images. Tra
   <img src="https://www.researchgate.net/profile/Henning_Mueller2/publication/319389848/figure/fig1/AS:538753372102661@1505460221339/Sample-prostatectomy-whole-slide-images-and-patches-Far-right-WSI-and-patches.png"><br><br>
 </div>
 
+----------------------------------
+
 ### Overview <br>
 This repo currently contains codes for patch extraction (from WSI) and will be updated constantly. :) (Codes for classification and segmentation will be added when they are ready).
 
@@ -21,3 +23,5 @@ necessary transformation is needed when we crop patches from WSIs using read_reg
 numpy.asarray() / numpy.array() would switch the position of WIDTH and HEIGHT in shape, and vice versa. 
 If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT, WIDTH, CHANNEL) after the np.asarray() transformation.
 4. **Magnification level choice** <br>
+Below is an patch-extraction example (performed on one sample from [Camelyon 2017 dataset](https://camelyon17.grand-challenge.org/data/)). Red boxes are selected patches and green ones annotated tumor areas. As we can see, when we extract 500 x 500 patches from a WSI in **level3** scale, the portion of tumor areas are too small, which means discriminative information could be significantly diluted if we use all these selected patches to train CNN. <br>This urges us to use smaller magnification level (higher resolution scale).
+![slide09-1](http://119.29.151.114/images/level3_patche_extraction.jpeg)

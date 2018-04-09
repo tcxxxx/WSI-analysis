@@ -3,9 +3,10 @@ Patch extraction is the most important preparatory work when we adopt patch-base
 
 Currently, there are three files in the directory:
 - extract_patches.py: includes processing functions for WSIs of which **level >= 3**;
-- extract_patches_split.py: includes processing functions for WSIs of which **level <= 2**.<br> The solution we currently adopt is to split the whole WSI images first, and process the sections in turn;
+- extract_patches_split.py: includes processing functions for WSIs of which **level <= 2**. The solution we currently adopt is to split the whole WSI images first, and process the sections in turn;
 - utils.py: includes functions for tumor area calculation;<br>
------------------------------------------------
+
+---------------------------------------------------------------------------
 There are several tricky parts when extracting patches from WSIs:
 1. **Memory limit.** <br>
 The RAM size of our lab is 31 GB, and it could hardly hold a level0 WSI. So be careful when loading the whole image.<br>
@@ -20,10 +21,12 @@ If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT
 Below is an patch-extraction example (performed on one sample from [Camelyon 2017 dataset](https://camelyon17.grand-challenge.org/data/)). Red boxes are selected patches and green ones annotated tumor areas. As we can see, when we extract 500 x 500 patches from a WSI in **level3** scale, the portion of tumor areas are too small, which means discriminative information could be significantly diluted if we use all these selected patches to train CNN. <br>This urges us to use smaller magnification level (higher resolution scale).
 ![slide09-1](http://119.29.151.114/images/level3_patche_extraction.jpeg)
 
+----------------------------------------------------------------------------
+### Examples:
 - [x] [Here](http://119.29.151.114/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
 - [ ] level**1** patch-extraction pipeline will be added very soon.
 
------------------------------------------------
+----------------------------------------------------------------------------
 ### References / Helpful links:
 1. [Drawing contours with OpenCV Python](https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_contours/py_table_of_contents_contours/py_table_of_contents_contours.html)
 2. [Camelyon 2017 Grand Challenge](https://camelyon17.grand-challenge.org/)

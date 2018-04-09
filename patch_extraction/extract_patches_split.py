@@ -443,7 +443,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
 '''
 Parse annotation
 '''
-def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
+def parse_annotation(anno_path, wsi_obj, level, mag_factor):
     
     '''
     Args:
@@ -460,15 +460,6 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
 
     print('parsing annotation xml:')
 
-    width_whole, height_whole = wsi_obj.level_dimensions[level]
-    width_split, height_split = width_whole // SPLIT, height_whole // SPLIT
-    # print(width_whole, height_whole)
-
-    # section size after split
-    print(int(sect[0]), int(sect[1]))
-    delta_x = int(sect[0]) * width_split
-    delta_y = int(sect[1]) * height_split
-    print(delta_x, delta_y)
 
     for an_i, crds in enumerate(tree.iter(tag='Coordinates')):
         '''
@@ -477,9 +468,7 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
         print(an_i)
 
         node_list = list()
-
         node_list_=list()
-        node_local_list_=list()
 
         for coor in crds:
             '''
@@ -497,26 +486,14 @@ def parse_annotation(anno_path, wsi_obj, sect, level, mag_factor):
 
             node_list.append(Point(x,y))
             node_list_.append((x,y))
-
-            '''
-                Here we get the local coordinates from the global ones.
-            '''
-            local_x = x - delta_x
-            if local_x < 0:
-                local_x = -1
-            local_y = y - delta_y
-            if local_y < 0:
-                local_y = -1
-            node_local_list_.append((local_x, local_y))
         
         anno_list.append(node_list_)
-        anno_local_list.append(node_local_list_)
 
         if len(node_list_) > 2:
             polygon_ = Polygon(node_list_)
             polygon_list.append(polygon_)
     
-    return polygon_list, anno_list, anno_local_list
+    return polygon_list, anno_list
 
 '''
     Draw extracted patches 
@@ -570,7 +547,7 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
     df1_["coord_y"] = [coord[1] for coord in patches_coords]
     
     if tumor_dict == None:
-        
+
         df1_["tumor_area"] = [0 for coord in patches_coords]
     
         df1_["tumor_%"] = [0 for coord in patches_coords]
@@ -632,7 +609,7 @@ def extract_all(slide_path, level, mag_factor, pnflag=True):
     if pnflag:
         polygon_list, anno_list, anno_local_list = \
         parse_annotation(anno_path + anno_sample, wsi_obj, \
-                         sect, level, mag_factor)
+                         level, mag_factor)
 
     time_all = 0
 

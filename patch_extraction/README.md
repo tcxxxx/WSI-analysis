@@ -3,7 +3,7 @@ Patch extraction is the most important preparatory work when we adopt patch-base
 
 Currently, there are three files in the directory:
 - extract_patches.py: includes processing functions for WSIs of which **level >= 3**;
-- extract_patches_split.py: includes processing functions for WSIs of which **level <= 2** (We will split the whole WSI images first and process the sections in turn);<br>
+- extract_patches_split.py: includes processing functions for WSIs of which **level <= 2**.<br> The solution we currently adopt is to split the whole WSI images first, and process the sections in turn;
 - utils.py: includes functions for tumor area calculation;<br>
 -----------------------------------------------
 There are several tricky parts when extracting patches from WSIs:

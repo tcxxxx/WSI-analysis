@@ -6,6 +6,12 @@ Currently, there are three files in the directory:
 - extract_patches_split.py: includes processing functions for WSIs of which **level <= 2**. The solution we currently adopt is to split the whole WSI images first, and process the sections in turn;
 - utils.py: includes functions for tumor area calculation;<br>
 
+----------------------------------------------------------------------------
+### Examples:
+- [x] [HERE](http://119.29.151.114/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
+- [x] [HERE](http://119.29.151.114/patch_extraction_level1example.html) is an example of level**1** patch-extraction pipeline. Jupyter notebook file is also available in this directory. <br> It should be noticed that the functions of processing level**1** WSI (in **extract_patches_split.py**) are somewhat different from the ones in **extract_patches.py**, which were designed for images whose level >= 3.
+- [x] [HERE](http://119.29.151.114/simple_visualizationExample.html) is an example of simple analysis on tumor patch statistics.
+
 ---------------------------------------------------------------------------
 There are several tricky parts when extracting patches from WSIs:
 1. **Memory limit.** <br>
@@ -20,11 +26,6 @@ If an Image object' shape is (WIDTH, HEIGHT, CHANNEL), the shape will be (HEIGHT
 4. **Magnification level choice**<br>
 Below is an patch-extraction example (performed on one sample from [Camelyon 2017 dataset](https://camelyon17.grand-challenge.org/data/)). Red boxes are selected patches and green ones annotated tumor areas. As we can see, when we extract 500 x 500 patches from a WSI in **level3** scale, the portion of tumor areas are too small, which means discriminative information could be significantly diluted if we use all these selected patches to train CNN. <br>This urges us to use smaller magnification level (higher resolution scale).
 ![slide09-1](http://119.29.151.114/images/level3_patche_extraction.jpeg)
-
-----------------------------------------------------------------------------
-### Examples:
-- [x] [HERE](http://119.29.151.114/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
-- [x] [HERE](http://119.29.151.114/patch_extraction_level1example.html) is an example of level**1** patch-extraction pipeline. Jupyter notebook file is also available in this directory. <br> It should be noticed that the functions of processing level**1** WSI (in **extract_patches_split.py**) are somewhat different from the ones in **extract_patches.py**, which were designed for images whose level >= 3.
 
 ----------------------------------------------------------------------------
 ### References / Helpful links:

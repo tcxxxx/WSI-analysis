@@ -334,8 +334,8 @@ def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
 
     for sect in section_list:
 
-        dir_ = dataset_dir + slide_ + level_dir + sect
-        patches_dir = dataset_dir + slide_ + level_dir + sect + '/patches/'
+        dir_ = dataset_dir + slide_name + level_dir + sect
+        patches_dir = dataset_dir + slide_name + level_dir + sect + '/patches/'
         if not os.path.isdir(dir_):
             continue
 
@@ -423,7 +423,7 @@ def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
     print("Number of negative patches: ", len(negative_patches_path))
     
     # change this to the target dir as desired
-    cur_dir=dataset_dir + slide_ + level_dir
+    cur_dir=dataset_dir + slide_name + level_dir
 
     with open(cur_dir + 'pospaths.txt', "wb") as f:   
          pickle.dump(positive_patches_path, f)

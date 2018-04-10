@@ -341,7 +341,7 @@ def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
 
         coordinates_file = [i for i in os.listdir(dir_) \
                             if '.csv' in i][0]
-        coordxml_file = dataset_dir + slide_ + level_dir + sect + '/' + coordinates_file
+        coordxml_file = dataset_dir + slide_name + level_dir + sect + '/' + coordinates_file
         # print(patches_dir)
         patches_dir_all.append(patches_dir)
         # print(coordxml_file)

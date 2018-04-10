@@ -319,12 +319,11 @@ def calc_tumorArea(polygon_list, patches_coords):
     
 '''
 def pre_analysis(slide_name, dataset_dir='./dataset_patches/', level_dir='/level1/'\
-                ):
+                 section_list):
     
     '''
     Args:
         slide_name: for example, 'patient_015_node_2'.
-    
     '''
     
     '''

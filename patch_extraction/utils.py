@@ -323,7 +323,8 @@ def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
     
     '''
     Args:
-        slide_name: for example, 'patient_015_node_2'.
+        slide_name: for example, 'patient_015_node_2'. 
+        In current case, DO NOT add '.tif' in slide_name.
     '''
     
     '''

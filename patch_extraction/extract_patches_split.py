@@ -615,8 +615,7 @@ def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
     wsi_obj=openSlide_init(slide_path, level)
 
     if pnflag:
-        polygon_list, anno_list, anno_local_list = \
-        parse_annotation(anno_path, wsi_obj, level, mag_factor)
+        polygon_list, anno_list = parse_annotation(anno_path, wsi_obj, level, mag_factor)
 
     time_all = 0
 

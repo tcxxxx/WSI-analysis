@@ -3,7 +3,7 @@ Patch extraction is the most important preparatory work when we adopt patch-base
 
 Currently, there are three files in the directory:
 - extract_patches.py: includes processing functions for WSIs of which **level >= 3**;
-- extract_patches_split.py: includes processing functions for WSIs of which **level <= 2**. The solution we currently adopt is to split the whole WSI images first, and process the sections in turn;
+- extract_patches_split.py: includes processing functions for WSIs of which **level <= 2**. The solution we currently adopt is to split the whole WSI images first, and process the sections in turn;<br>
 ~~- utils.py: includes functions for tumor area calculation;<br>~~
 
 **It should be noticed that these files include seperate functions only and they are not the complete script to process WSIs. All the functions need to be imported before usage:<br>**
@@ -11,7 +11,7 @@ Currently, there are three files in the directory:
 from WSIAnalysis.patch_extraction.extract_patches_split import \
 openSlide_init, read_wsi, construct_colored_wsi, get_contours, \
 segmentation_hsv, construct_bags, save_to_disk, parse_annotation, \
-extract_all, \
+extract_all, preprocessingAndanalysis\
 calculate_intersection, calculate_polygon, calc_tumorArea
 ``````
 

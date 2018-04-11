@@ -426,8 +426,9 @@ def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
     # change this to the target dir as desired
     cur_dir=dataset_dir + slide_name + level_dir
 
-    with open(cur_dir + 'pospaths.txt', "wb") as f:   
-         pickle.dump(positive_patches_path, f)
+    if len(positive_patches_path):
+	    with open(cur_dir + 'pospaths.txt', "wb") as f:   
+	         pickle.dump(positive_patches_path, f)
 
     with open(cur_dir + 'negpaths.txt', "wb") as f:   
          pickle.dump(negative_patches_path, f)

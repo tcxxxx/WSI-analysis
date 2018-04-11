@@ -997,6 +997,60 @@ def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
 
 
 '''
+'''
+def draw_pospatch(patchpath, slidepath, annopath, level, mag_factor):
+    '''
+    
+    '''
+    
+    PIXEL_BLACK = 0
+    PIXEL_WHITE = 255
+    
+    samplepos = Image.open(sample_patch)
+
+    delta_x=int(sample_patch.split('/')[-1].split('.')[0].split('_')[-2])
+    delta_y=int(sample_patch.split('/')[-1].split('.')[0].split('_')[-1])
+
+    print(delta_x, delta_y)
+
+    wsi_obj=openSlide_init(slide_path_, level)
+    polygon_list, anno_list = parse_annotation(anno_path_, \
+                                               wsi_obj, level, mag_factor)
+    local_anno = list()
+
+    for area_ in anno_list:
+        tmp = list()
+        for coords in area_:
+
+            x_ = coords[0] - delta_x
+            y_ = coords[1] - delta_y
+
+            tmp.append((x_, y_))
+        local_anno.append(tmp)
+
+    local_anno_arr = list()
+    for contour in local_anno:
+
+        arr = np.array(contour)
+        arr = np.expand_dims(arr, axis=1)
+        local_anno_arr.append(np.array(arr))
+
+    sample_arr = np.array(samplepos) 
+    sample_filled=cv2.drawContours(sample_arr, local_anno_arr, -1, 
+                                      (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=-1)
+    
+    patchfilled_img = Image.fromarray(sample_filled)
+    
+    sample_arr = np.array(samplepos) 
+    sample_annotated=cv2.drawContours(sample_arr, local_anno_arr, -1, 
+                                      (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=3)
+
+    patchannotated_img = Image.fromarray(sample_annotated)
+    
+    return patchfilled_img, patchannotated_img
+
+
+'''
     The whole pipeline of extracting patches.
 '''
 def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):

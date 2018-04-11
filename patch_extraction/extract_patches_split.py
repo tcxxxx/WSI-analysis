@@ -586,13 +586,21 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
 '''
     The whole pipeline of extracting patches.
 '''
-def extract_all(slide_path, level, mag_factor, pnflag=True):
+def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
     '''
     Args:
-        slide_: Path to target slide.
-        level: Magnification level. 
-        mag_factor: Pow(2, level).
-        pnflag: Boolean variable, which indicates whether it is a positive one or not
+        slide_path: Path to target slide, 
+            for example: ../data-wsi/camelyon17/training/patient_017_node_2.tif
+    
+        anno_path: Path to the annotation xml of the target slide, 
+            for example: ../data-wsi/camelyon17/lesion_annotations/patient_017_node_2.xml
+    
+        level: Magnification level; 
+
+        mag_factor: Pow(2, level);
+        
+        pnflag: Boolean, which indicates whether it is a positive one or not
+    
     Returns: 
         To-do.
     '''
@@ -608,8 +616,7 @@ def extract_all(slide_path, level, mag_factor, pnflag=True):
 
     if pnflag:
         polygon_list, anno_list, anno_local_list = \
-        parse_annotation(anno_path + anno_sample, wsi_obj, \
-                         level, mag_factor)
+        parse_annotation(anno_path, wsi_obj, level, mag_factor)
 
     time_all = 0
 
@@ -645,6 +652,7 @@ def extract_all(slide_path, level, mag_factor, pnflag=True):
                 tumor_dict = calc_tumorArea(polygon_list, patches_coords)
             else:
                 tumor_dict = None
+
             save_to_disk(patches, patches_coords, tumor_dict, mask, \
                          slide_path, level, sect)
 

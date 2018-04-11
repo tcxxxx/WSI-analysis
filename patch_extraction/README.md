@@ -4,12 +4,23 @@ Patch extraction is the most important preparatory work when we adopt patch-base
 Currently, there are three files in the directory:
 - extract_patches.py: includes processing functions for WSIs of which **level >= 3**;
 - extract_patches_split.py: includes processing functions for WSIs of which **level <= 2**. The solution we currently adopt is to split the whole WSI images first, and process the sections in turn;
-- utils.py: includes functions for tumor area calculation;<br>
+~~- utils.py: includes functions for tumor area calculation;<br>~~
+
+**It should be noticed that these files include seperate functions only and they are not the complete script to process WSIs. All the functions need to be imported before usage:<br>**
+``````
+from WSIAnalysis.patch_extraction.extract_patches_split import \
+openSlide_init, read_wsi, construct_colored_wsi, get_contours, \
+segmentation_hsv, construct_bags, save_to_disk, parse_annotation, \
+extract_all, \
+calculate_intersection, calculate_polygon, calc_tumorArea
+``````
+
+For convenience, all the functions are written in the *extract_patches_split.py* file. I am pretty sure there are much more elegant ways to write these codes, but for now I want to focus on the research problem and only make sure that these codes are robust enough to function :) Please do not hesitate to leave a comment if you have any advice or run into problems with these codes, I would be more than thankful. :)
 
 ----------------------------------------------------------------------------
 ### Examples:
 - [x] [HERE](http://119.29.151.114/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
-- [x] (Will update and make it more human-readable very soon) [HERE](http://119.29.151.114/patch_extraction_level1example.html) is an example of level**1** patch-extraction pipeline. Jupyter notebook file is also available in this directory. <br> It should be noticed that the functions of processing level**1** WSI (in **extract_patches_split.py**) are somewhat different from the ones in **extract_patches.py**, which were designed for images whose level >= 3.
+- [ ] (Will update and make it more human-readable very soon) [HERE](http://119.29.151.114/patch_extraction_level1example.html) is an example of level**1** patch-extraction pipeline. Jupyter notebook file is also available in this directory. <br> It should be noticed that the functions of processing level**1** WSI (in **extract_patches_split.py**) are somewhat different from the ones in **extract_patches.py**, which were designed for images whose level >= 3.
 - [ ] (Old version, to be updated) [HERE](http://119.29.151.114/simple_visualizationExample.html) is an example of simple analysis on tumor patch statistics.
 
 ---------------------------------------------------------------------------

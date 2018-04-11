@@ -11,7 +11,7 @@ Currently, there are three files in the directory:
 from WSIAnalysis.patch_extraction.extract_patches_split import \
 openSlide_init, read_wsi, construct_colored_wsi, get_contours, \
 segmentation_hsv, construct_bags, save_to_disk, parse_annotation, \
-extract_all, preprocessingAndanalysis\
+extract_all, preprocessingAndanalysis,\
 calculate_intersection, calculate_polygon, calc_tumorArea
 ``````
 

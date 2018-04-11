@@ -318,13 +318,18 @@ def calc_tumorArea(polygon_list, patches_coords):
     |   |   |    |-- ...
     
 '''
-def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
-				 level_dir='/level1/'):
+def preprocessingAndanalysis(slide_name, section_list, \
+	dataset_dir='./dataset_patches/', level_dir='/level1/', \
+	positivethresh):
     
     '''
     Args:
-        slide_name: for example, 'patient_015_node_2'. 
-        In current case, DO NOT add '.tif' in slide_name.
+        slide_name: for example, 'patient_015_node_2',
+        In current case, DO NOT add '.tif' in slide_name;
+        section_list: the sections to be analyzed;
+        dataset_dir: dir / path;
+        positivethresh: discard patches in which tumor area is too small.
+
     '''
     
     '''
@@ -379,24 +384,33 @@ def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
     pd_dist = pd_all.groupby('tumor_area').size()\
               .reset_index().rename(columns={0:'numbers'})
     
-    plt.hist(pd_dist.tumor_area, weights=pd_dist.numbers, \
-             align='mid')
+    plt.hist(pd_dist.tumor_area, weights=pd_dist.numbers, align='mid')
+
     plt.xlabel('Area Size')
     plt.ylabel('Number')
     plt.title('Tumor patch statistics of' + ' ' +  slide_name)
     plt.show()
     
     # DF which holds only tumor patches
+
+    positivethresh = float(positivethresh)
+
     pd_tumor = pd_all.loc[pd_all['tumor_area'] > 0].\
-               sort_values(by=['tumor_area'], ascending=False).reset_index()
+    		sort_values(by=['tumor_area'], ascending=False).reset_index()
+
+    pd_valid_tumor = pd_all.loc[pd_all['tumor_%'] > positivethresh].\
+    		sort_values(by=['tumor_area'], ascending=False).reset_index()
+
     print("Example of tumor patches:\n", pd_tumor[:10])
+
+    print("Example of valid tumor patches:\n", pd_tumor[-10:])
     
     '''
         Section4: Save paths of postive and negative seperately
     '''
     tumor_coords = list()
 
-    for index, row in pd_tumor.iterrows():
+    for index, row in pd_valid_tumor.iterrows():
         x_ = int(row['coord_x'])
         y_ = int(row['coord_y'])
         tumor_coords.append((x_, y_)) 
@@ -413,20 +427,19 @@ def pre_analysis(slide_name, section_list, dataset_dir='./dataset_patches/', \
 
         if (x_, y_) in tumor_coords:
             positive_patches_path.append(patch_)
-            # print((x_, y_))
-
         else:
             negative_patches_path.append(patch_)
 
     assert (len(negative_patches_path) + len(positive_patches_path)) == len(instances_all)
     
-    print("Number of positive patches: ", len(positive_patches_path))
+    print("Number of positive patches(valid): ", len(positive_patches_path))
     print("Number of negative patches: ", len(negative_patches_path))
     
     # change this to the target dir as desired
     cur_dir=dataset_dir + slide_name + level_dir
 
     if len(positive_patches_path) != 0:
+	    
 	    with open(cur_dir + 'pospaths.txt', "wb") as f:   
 	         pickle.dump(positive_patches_path, f)
 

@@ -860,6 +860,142 @@ def calc_tumorArea(polygon_list, patches_coords):
 
     return area_list
 
+def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
+    dataset_dir='./dataset_patches/', level_dir='/level1/'):
+    
+    '''
+    Args:
+        slide_name: for example, 'patient_015_node_2',
+        In current case, DO NOT add '.tif' in slide_name;
+        section_list: the sections to be analyzed;
+        dataset_dir: dir / path;
+        positivethresh: discard patches in which tumor area is too small.
+
+    '''
+    
+    '''
+        Section1: locate all patches and coordinates dirs.
+    '''
+    patches_dir_all = list()
+    coordinates_file_all = list()
+
+    for sect in section_list:
+
+        dir_ = dataset_dir + slide_name + level_dir + sect
+        patches_dir = dataset_dir + slide_name + level_dir + sect + '/patches/'
+        if not os.path.isdir(dir_):
+            continue
+
+        coordinates_file = [i for i in os.listdir(dir_) \
+                            if '.csv' in i][0]
+        coordxml_file = dataset_dir + slide_name + level_dir + sect + '/' + coordinates_file
+        # print(patches_dir)
+        patches_dir_all.append(patches_dir)
+        # print(coordxml_file)
+        coordinates_file_all.append(coordxml_file)
+    
+    '''
+        Section2: collect paths to all the patch images.
+    '''
+    instances_all = list()
+
+    for patch_dir_ in patches_dir_all:
+        tmp = [patch_dir_ + i for i in os.listdir(patch_dir_) if '.jpeg' in i]
+        instances_all += tmp
+
+    assert len(list(set(instances_all))) == len(instances_all)
+    print(slide_name)
+    print("total number of patches: ", len(instances_all))
+    
+    
+    '''
+        Section3: re-organize coordinates with pandas DataFrame. 
+    '''
+    frames = list()
+    for coordsfile in coordinates_file_all:
+
+        df_tmp = pd.read_csv(coordsfile)
+        frames.append(df_tmp)
+    
+    # pd_all: DataFrame which holds all the coords
+    pd_all = pd.concat(frames)
+    pd_all = pd_all.drop_duplicates()
+    
+    # pd_dist: DF in which rows were ordered by column 'tumor area'.
+    pd_dist = pd_all.groupby('tumor_area').size()\
+              .reset_index().rename(columns={0:'numbers'})
+    
+    plt.hist(pd_dist.tumor_area, weights=pd_dist.numbers, align='mid')
+
+    plt.xlabel('Area Size')
+    plt.ylabel('Number')
+    plt.title('Tumor patch statistics of' + ' ' +  slide_name)
+    plt.show()
+    
+    # DF which holds only tumor patches
+
+    positivethresh = float(positivethresh)
+
+    pd_tumor = pd_all.loc[pd_all['tumor_area'] > 0].\
+            sort_values(by=['tumor_area'], ascending=False).reset_index()
+
+    pd_valid_tumor = pd_all.loc[pd_all['tumor_%'] > positivethresh].\
+            sort_values(by=['tumor_area'], ascending=False).reset_index()
+
+    print("Example of tumor patches:\n", pd_tumor[:10])
+
+    print("Example of valid tumor patches:\n", pd_valid_tumor[:10])
+    
+    '''
+        Section4: Save paths of postive and negative seperately
+    '''
+    tumor_coords = list()
+
+    for index, row in pd_valid_tumor.iterrows():
+        x_ = int(row['coord_x'])
+        y_ = int(row['coord_y'])
+        tumor_coords.append((x_, y_)) 
+        # print(x_, y_) 
+
+    positive_patches_path = list()
+    negative_patches_path = list()
+
+    for patch_ in instances_all:
+
+        filename = patch_.split('/')[-1].split('.')[0]
+        x_ = int(filename.split('_')[-2])
+        y_ = int(filename.split('_')[-1])
+
+        if (x_, y_) in tumor_coords:
+            positive_patches_path.append(patch_)
+        else:
+            negative_patches_path.append(patch_)
+
+    assert (len(negative_patches_path) + len(positive_patches_path)) == len(instances_all)
+    
+    print("Number of positive patches (valid): ", len(positive_patches_path))
+    print("Number of negative patches: ", len(negative_patches_path))
+    
+    # change this to the target dir as desired
+    cur_dir=dataset_dir + slide_name + level_dir
+
+    if len(positive_patches_path) != 0:
+        
+        with open(cur_dir + 'pospaths.txt', "wb") as f:   
+             pickle.dump(positive_patches_path, f)
+
+    with open(cur_dir + 'negpaths.txt', "wb") as f:   
+         pickle.dump(negative_patches_path, f)
+
+    # with open(cur_dir + 'pospaths.txt', "rb") as fp:   # Unpickling
+    #     b = pickle.load(fp)
+    
+    return pd_all, pd_tumor, positive_patches_path, negative_patches_path
+    
+# pd_all, pd_tumor, positive_patches_path, negative_patches_path = \
+# pre_analysis(slide_)   
+
+
 '''
     The whole pipeline of extracting patches.
 '''

@@ -402,7 +402,7 @@ def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
 
     print("Example of tumor patches:\n", pd_tumor[:10])
 
-    print("Example of valid tumor patches:\n", pd_tumor[-10:])
+    print("Example of valid tumor patches:\n", pd_valid_tumor[:10])
     
     '''
         Section4: Save paths of postive and negative seperately
@@ -431,7 +431,7 @@ def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
 
     assert (len(negative_patches_path) + len(positive_patches_path)) == len(instances_all)
     
-    print("Number of positive patches(valid): ", len(positive_patches_path))
+    print("Number of positive patches (valid): ", len(positive_patches_path))
     print("Number of negative patches: ", len(negative_patches_path))
     
     # change this to the target dir as desired

@@ -318,9 +318,8 @@ def calc_tumorArea(polygon_list, patches_coords):
     |   |   |    |-- ...
     
 '''
-def preprocessingAndanalysis(slide_name, section_list, \
-	dataset_dir='./dataset_patches/', level_dir='/level1/', \
-	positivethresh):
+def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
+	dataset_dir='./dataset_patches/', level_dir='/level1/'):
     
     '''
     Args:

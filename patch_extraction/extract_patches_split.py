@@ -465,7 +465,7 @@ def parse_annotation(anno_path, wsi_obj, level, mag_factor):
         '''
             In this loop, we process one seperate area of annotation at a time.
         '''
-        print(an_i)
+        print("annotation area #%d", an_i)
 
         node_list = list()
         node_list_=list()

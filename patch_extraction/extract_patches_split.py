@@ -1006,7 +1006,7 @@ def draw_pospatch(patchpath, slidepath, annopath, level, mag_factor):
     PIXEL_BLACK = 0
     PIXEL_WHITE = 255
     
-    samplepos = Image.open(sample_patch)
+    samplepos = Image.open(patchpath)
 
     delta_x=int(sample_patch.split('/')[-1].split('.')[0].split('_')[-2])
     delta_y=int(sample_patch.split('/')[-1].split('.')[0].split('_')[-1])

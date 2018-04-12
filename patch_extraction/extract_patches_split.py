@@ -998,7 +998,8 @@ def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
 
 '''
 '''
-def draw_pospatch(patchpath, slidepath, annopath, level, mag_factor):
+def draw_pospatch(patchpath, slidepath, annopath, level, \
+    mag_factor,delta_x=0, delta_y=0):
     '''
     
     '''
@@ -1008,13 +1009,13 @@ def draw_pospatch(patchpath, slidepath, annopath, level, mag_factor):
     
     samplepos = Image.open(patchpath)
 
-    delta_x=int(sample_patch.split('/')[-1].split('.')[0].split('_')[-2])
-    delta_y=int(sample_patch.split('/')[-1].split('.')[0].split('_')[-1])
+    delta_x=int(patchpath.split('/')[-1].split('.')[0].split('_')[-2])
+    delta_y=int(patchpath.split('/')[-1].split('.')[0].split('_')[-1])
 
     print(delta_x, delta_y)
 
-    wsi_obj=openSlide_init(slide_path_, level)
-    polygon_list, anno_list = parse_annotation(anno_path_, \
+    wsi_obj=openSlide_init(slidepath, level)
+    polygon_list, anno_list = parse_annotation(annopath, \
                                                wsi_obj, level, mag_factor)
     local_anno = list()
 

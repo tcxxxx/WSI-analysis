@@ -1136,3 +1136,123 @@ def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
     
     return patches_all
 
+
+
+'''
+    Updated version of extract_all(), on 2018-04-15
+
+    added analysis and visualization part to the whole pipeline.
+'''
+
+def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
+
+    '''
+    
+    '''
+    
+    mag_factor = pow(2, level)
+    
+    # !!! should be changed soon.
+    slide_name = slide_path.split('/')[-1].split('.')[0]
+    
+    wsi_obj = openSlide_init(slide_path, level)
+
+    polygon_list, anno_list = \
+    parse_annotation(anno_path, wsi_obj, \
+                     level, mag_factor)
+
+    time_all = 0
+
+    patches_all = list()
+
+    for sect in section_list:
+
+        start = time.time()
+
+        rgba_image = read_wsi(wsi_obj, level, mag_factor, sect)
+        wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_image)
+
+        print('Transformed shape: (height, width, channel)')
+        print("WSI HSV shape: ", wsi_hsv_.shape)
+        print("WSI RGB shape: ", wsi_rgb_.shape)
+        print("WSI GRAY shape: ", wsi_gray_.shape)
+        print('\n')
+
+        del rgba_image
+        gc.collect()
+
+        bounding_boxes, contour_coords, contours, mask \
+        = segmentation_hsv(wsi_hsv_, wsi_rgb_)
+
+        del wsi_hsv_
+        gc.collect()
+
+        patches, patches_coords, patches_coords_local\
+        = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
+                        level, mag_factor, PATCH_SIZE, sect)
+
+        if len(patches):
+            patches_all.append(patches)
+            if pnflag:
+                tumor_dict = calc_tumorArea(polygon_list, patches_coords)
+            else:
+                tumor_dict = None
+
+            save_to_disk(patches, patches_coords, tumor_dict, mask, \
+                         slide_path, level, sect)
+
+        del wsi_rgb_
+        del patches
+        del mask
+        gc.collect()
+
+        end = time.time()
+        time_all += end - start
+        print("Time spent on section", sect,  (end - start))
+        
+    pd_all, pd_tumor, positive_patches_path, negative_patches_path = \
+    preprocessingAndanalysis(slide_name, section_list, positivethresh=0.1, \
+                             dataset_dir='./dataset_patches/', level_dir='/level1/')
+    
+    
+    
+    samplelevel=7
+    samplemag_factor=pow(2, samplelevel)
+
+    print(slide_path)
+    print(wsi_obj.level_dimensions[samplelevel])
+
+    width_thumb, height_thumb = wsi_obj.level_dimensions[samplelevel]
+
+    wsi_img = wsi_obj.read_region((0, 0), samplelevel, (width_thumb, height_thumb))
+    wsi_arr = np.array(wsi_img)
+
+    tree = ET.ElementTree(file=anno_path)
+
+    anno_ = list()
+
+    for an_i, crds in enumerate(tree.iter(tag='Coordinates')):
+        tmp = list()
+        for coord in crds:
+            x = int(float(coord.attrib['X'])) // samplemag_factor
+            y = int(float(coord.attrib['Y'])) // samplemag_factor
+            tmp.append((x, y))
+
+        anno_.append(tmp)
+
+    anno_arr = list()
+
+    for contour in anno_:
+
+        arr = np.array(contour)
+        arr = np.expand_dims(arr, axis=1)
+        anno_arr.append(np.array(arr))
+
+    _=cv2.drawContours(wsi_arr, anno_arr, -1, \
+                      (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=2)
+
+    img_sample_ = Image.fromarray(wsi_arr[:,:,:3])
+    
+    print('total time: ', time_all)
+
+    return img_sample_, wsi_img

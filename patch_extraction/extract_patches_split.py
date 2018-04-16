@@ -1212,9 +1212,9 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
         time_all += end - start
         print("Time spent on section", sect,  (end - start))
         
-    pd_all, pd_tumor, positive_patches_path, negative_patches_path = \
-    preprocessingAndanalysis(slide_name, section_list, positivethresh=0.1, \
-                             dataset_dir='./dataset_patches/', level_dir='/level1/')
+    # pd_all, pd_tumor, positive_patches_path, negative_patches_path = \
+    # preprocessingAndanalysis(slide_name, section_list, positivethresh=0.1, \
+    #                          dataset_dir='./dataset_patches/', level_dir='/level1/')
     
     samplelevel=7
     samplemag_factor=pow(2, samplelevel)

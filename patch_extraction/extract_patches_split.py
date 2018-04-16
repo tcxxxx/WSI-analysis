@@ -440,7 +440,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
                         # print('Did not save\n')
 
     # end = time.time()
-    print("Time spent on patch extraction: ",  (end - start))
+    # print("Time spent on patch extraction: ",  (end - start))
 
     # patches_ = [patch_[:,:,:3] for patch_ in patches] 
     print("Total number of patches extracted:", len(patches))

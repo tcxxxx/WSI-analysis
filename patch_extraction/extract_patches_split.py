@@ -252,7 +252,7 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
 
         The only difference between $contours and $contour_coords is in shape.
     '''
-    print("HSV segmentation: ")
+    print("HSV segmentation")
     contour_coord = []
     
     '''
@@ -278,20 +278,20 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
     '''
         Closing
     '''
-    print("Closing step: ")
+    # print("Closing step: ")
     close_kernel = np.ones((15, 15), dtype=np.uint8) 
     image_close = cv2.morphologyEx(np.array(thresh),cv2.MORPH_CLOSE, close_kernel)
-    print("image_close size", image_close.shape)
+    # print("image_close size", image_close.shape)
 
     '''
         Openning
     ''' 
-    print("Openning step: ")
+    # print("Openning step: ")
     open_kernel = np.ones((5, 5), dtype=np.uint8)
     image_open = cv2.morphologyEx(image_close, cv2.MORPH_OPEN, open_kernel)
-    print("image_open size", image_open.size)
+    # print("image_open size", image_open.size)
 
-    print("Getting Contour: ")
+    # print("Getting Contour: ")
     bounding_boxes, contour_coords, contours, mask \
     = get_contours(np.array(image_open), wsi_rgb_.shape)
       
@@ -328,7 +328,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
     print(int(sect[0]), int(sect[1]))
     delta_x = int(sect[0]) * width_split
     delta_y = int(sect[1]) * height_split
-    print("delta:", delta_x, delta_y)
+    # print("delta:", delta_x, delta_y)
 
     '''
         !!! 
@@ -345,8 +345,8 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
     for i, box_ in enumerate(contours_):
 
         box_ = cv2.boundingRect(np.squeeze(box_))
-        print('region', i)
-        
+        # print('region', i)
+        # 
         '''
 
         !!! Take care of difference in shapes:

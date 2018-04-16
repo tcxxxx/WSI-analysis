@@ -1083,7 +1083,8 @@ def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
     wsi_obj=openSlide_init(slide_path, level)
 
     if pnflag:
-        polygon_list, anno_list = parse_annotation(anno_path, wsi_obj, level, mag_factor)
+        polygon_list, anno_list = \
+        parse_annotation(anno_path, wsi_obj, level, mag_factor)
 
     time_all = 0
 
@@ -1157,9 +1158,10 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
     
     wsi_obj = openSlide_init(slide_path, level)
 
-    polygon_list, anno_list = \
-    parse_annotation(anno_path, wsi_obj, \
-                     level, mag_factor)
+    if pnflag:
+        polygon_list, anno_list = \
+        parse_annotation(anno_path, wsi_obj, \
+                         level, mag_factor)
 
     time_all = 0
 

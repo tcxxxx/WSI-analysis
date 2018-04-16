@@ -1216,8 +1216,6 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
     preprocessingAndanalysis(slide_name, section_list, positivethresh=0.1, \
                              dataset_dir='./dataset_patches/', level_dir='/level1/')
     
-    
-    
     samplelevel=7
     samplemag_factor=pow(2, samplelevel)
 
@@ -1228,30 +1226,31 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
 
     wsi_img = wsi_obj.read_region((0, 0), samplelevel, (width_thumb, height_thumb))
     wsi_arr = np.array(wsi_img)
+    
+    if pnflag:
+        tree = ET.ElementTree(file=anno_path)
 
-    tree = ET.ElementTree(file=anno_path)
+        anno_ = list()
 
-    anno_ = list()
+        for an_i, crds in enumerate(tree.iter(tag='Coordinates')):
+            tmp = list()
+            for coord in crds:
+                x = int(float(coord.attrib['X'])) // samplemag_factor
+                y = int(float(coord.attrib['Y'])) // samplemag_factor
+                tmp.append((x, y))
 
-    for an_i, crds in enumerate(tree.iter(tag='Coordinates')):
-        tmp = list()
-        for coord in crds:
-            x = int(float(coord.attrib['X'])) // samplemag_factor
-            y = int(float(coord.attrib['Y'])) // samplemag_factor
-            tmp.append((x, y))
+            anno_.append(tmp)
 
-        anno_.append(tmp)
+        anno_arr = list()
 
-    anno_arr = list()
+        for contour in anno_:
 
-    for contour in anno_:
+            arr = np.array(contour)
+            arr = np.expand_dims(arr, axis=1)
+            anno_arr.append(np.array(arr))
 
-        arr = np.array(contour)
-        arr = np.expand_dims(arr, axis=1)
-        anno_arr.append(np.array(arr))
-
-    _=cv2.drawContours(wsi_arr, anno_arr, -1, \
-                      (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=2)
+        _=cv2.drawContours(wsi_arr, anno_arr, -1, \
+                          (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=2)
 
     img_sample_ = Image.fromarray(wsi_arr[:,:,:3])
     

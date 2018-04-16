@@ -370,7 +370,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
         X = np.arange(b_x_start, b_x_end, step=PATCH_SIZE // 2)
         Y = np.arange(b_y_start, b_y_end, step=PATCH_SIZE // 2)        
         
-        print('ROI length:', len(X), len(Y))
+        # print('ROI length:', len(X), len(Y))
         
         for h_pos, y_height_ in enumerate(Y):
         
@@ -386,7 +386,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
                 '''
                 patch_arr = wsi_rgb[y_height_: y_height_ + PATCH_SIZE,\
                                     x_width_:x_width_ + PATCH_SIZE,:]            
-                print("read_region (scaled coordinates): ", x_width_, y_height_)
+                # print("read_region (scaled coordinates): ", x_width_, y_height_)
 
                 width_mask = x_width_
                 height_mask = y_height_                
@@ -394,8 +394,8 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
                 patch_mask_arr = mask[height_mask: height_mask + PATCH_SIZE, \
                                       width_mask: width_mask + PATCH_SIZE]
 
-                print("Numpy mask shape: ", patch_mask_arr.shape)
-                print("Numpy patch shape: ", patch_arr.shape)
+                # print("Numpy mask shape: ", patch_mask_arr.shape)
+                # print("Numpy patch shape: ", patch_arr.shape)
 
                 try:
                     bitwise_ = cv2.bitwise_and(patch_arr, patch_mask_arr)
@@ -431,14 +431,15 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
 
                             patches_coords_local.append((x_width_, y_height_))
 
-                            print("global:", x_width_ + delta_x, y_height_ + delta_y)
-                            print("local: ", x_width_, y_height_)
-                            print('Saved\n')
+                            # print("global:", x_width_ + delta_x, y_height_ + delta_y)
+                            # print("local: ", x_width_, y_height_)
+                            # print('Saved\n')
 
                     else:
-                        print('Did not save\n')
+                        pass
+                        # print('Did not save\n')
 
-    end = time.time()
+    # end = time.time()
     print("Time spent on patch extraction: ",  (end - start))
 
     # patches_ = [patch_[:,:,:3] for patch_ in patches] 
@@ -1175,10 +1176,10 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
         wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_image)
 
         print('Transformed shape: (height, width, channel)')
-        print("WSI HSV shape: ", wsi_hsv_.shape)
-        print("WSI RGB shape: ", wsi_rgb_.shape)
-        print("WSI GRAY shape: ", wsi_gray_.shape)
-        print('\n')
+        # print("WSI HSV shape: ", wsi_hsv_.shape)
+        # print("WSI RGB shape: ", wsi_rgb_.shape)
+        # print("WSI GRAY shape: ", wsi_gray_.shape)
+        # print('\n')
 
         del rgba_image
         gc.collect()
@@ -1187,6 +1188,7 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
         = segmentation_hsv(wsi_hsv_, wsi_rgb_)
 
         del wsi_hsv_
+        del wsi_gray_
         gc.collect()
 
         patches, patches_coords, patches_coords_local\

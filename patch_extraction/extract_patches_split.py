@@ -328,7 +328,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
     print(int(sect[0]), int(sect[1]))
     delta_x = int(sect[0]) * width_split
     delta_y = int(sect[1]) * height_split
-    print("delta:", delta_x, delta_y)
+    # print("delta:", delta_x, delta_y)
 
     '''
         !!! 
@@ -345,7 +345,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
     for i, box_ in enumerate(contours_):
 
         box_ = cv2.boundingRect(np.squeeze(box_))
-        print('region', i)
+        # print('region', i)
         # 
         '''
 
@@ -370,7 +370,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
         X = np.arange(b_x_start, b_x_end, step=PATCH_SIZE // 2)
         Y = np.arange(b_y_start, b_y_end, step=PATCH_SIZE // 2)        
         
-        print('ROI length:', len(X), len(Y))
+        # print('ROI length:', len(X), len(Y))
         
         for h_pos, y_height_ in enumerate(Y):
         
@@ -386,7 +386,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
                 '''
                 patch_arr = wsi_rgb[y_height_: y_height_ + PATCH_SIZE,\
                                     x_width_:x_width_ + PATCH_SIZE,:]            
-                print("read_region (scaled coordinates): ", x_width_, y_height_)
+                # print("read_region (scaled coordinates): ", x_width_, y_height_)
 
                 width_mask = x_width_
                 height_mask = y_height_                

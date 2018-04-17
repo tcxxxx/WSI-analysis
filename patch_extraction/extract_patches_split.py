@@ -582,13 +582,13 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
     # Save whole patches: convert list of patches to array.
     # shape: (NUMBER_OF_PATCHES, PATCH_WIDTH, PATCH_HEIGHT, CHANNEL)
 
-    patch_whole = prefix_dir + 'patch_whole' + current_section
-    np.save(patch_whole, np.array(patches))
+    # patch_whole = prefix_dir + 'patch_whole' + current_section
+    # np.save(patch_whole, np.array(patches))
     
     '''
     Save mask file to the disk
     '''
-    np.save(mask_file, mask)
+    # np.save(mask_file, mask)
 
 
 '''

@@ -1259,3 +1259,68 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
     print('total time: ', time_all)
 
     return img_sample_, wsi_img
+
+
+'''
+    Back up function for multiprocessing.
+'''
+def capextract(slide_name):
+
+    pnflag=False
+
+    training_dir='../data-wsi/camelyon17/training/'
+    anno_dir = '../data-wsi/camelyon17/lesion_annotations_new/'
+
+    dir_prefix='./dataset_patches/' 
+    dir_end='/level1/patches/'
+
+    slideEnd='.tif'
+    annoEnd='.xml'
+
+    slide_path = training_dir + slide_name + slideEnd
+    anno_path = anno_dir + slide_name + annoEnd
+
+    print("SSS: ", slide_path)
+    
+    try:
+        section_list0 = ['00', '01', '02', '03']
+        img_sample_, wsi_img = extract_all_Plus(slide_path, anno_path, section_list0, pnflag, level=1)
+        del img_sample_
+        del wsi_img
+        gc.collect()
+        
+        section_list1 = ['10', '11', '12', '13']
+        img_sample_, wsi_img = extract_all_Plus(slide_path, anno_path, section_list1, pnflag, level=1)
+        del img_sample_
+        del wsi_img
+        gc.collect()
+
+        print('sec list 2\n\n')
+        section_list2 = ['20', '21', '22', '23']
+#         section_list2 = ['21', '22', '23']
+        img_sample_, wsi_img = extract_all_Plus(slide_path, anno_path, section_list2, pnflag, level=1)
+        del img_sample_
+        del wsi_img
+        gc.collect()
+
+        print('sec list 3\n\n')    
+        section_list3 = ['30', '31', '32', '33']
+        img_sample_, wsi_img = extract_all_Plus(slide_path, anno_path, section_list3, pnflag, level=1)
+        del img_sample_
+        del wsi_img
+        gc.collect()  
+
+    except:
+        print("???:", slide_name)
+
+    else:
+
+        section_list = ['00', '01', '02', '03', \
+                        '10', '11', '12', '13', \
+                        '20', '21', '22', '23', \
+                        '30', '31', '32', '33']  
+
+        pd_all, pd_tumor, positive_patches_path, negative_patches_path = \
+        preprocessingAndanalysis(slide_name, section_list, positivethresh=0, \
+                             dataset_dir='./dataset_patches/', level_dir='/level1/')
+

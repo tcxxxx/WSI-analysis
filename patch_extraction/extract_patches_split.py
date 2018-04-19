@@ -1214,7 +1214,7 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
 
         patches, patches_coords, patches_coords_local\
         = construct_bags(wsi_obj, wsi_rgb_, contours, mask, \
-                        level, mag_factor, PATCH_SIZE, sect)
+                        level, mag_factor, sect, PATCH_SIZE, SPLIT)
 
         if len(patches):
             patches_all.append(patches)

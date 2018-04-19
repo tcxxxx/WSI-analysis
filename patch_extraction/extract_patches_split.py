@@ -482,9 +482,6 @@ def parse_annotation(anno_path, wsi_obj, level, mag_factor):
 
     tree = ET.ElementTree(file = anno_path)
 
-    print('parsing annotation xml: ')
-
-
     for an_i, crds in enumerate(tree.iter(tag='Coordinates')):
         '''
             In this loop, we process one seperate area of annotation at a time.

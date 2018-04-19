@@ -66,6 +66,9 @@ mag_factor = pow(2, level)
 def openSlide_init(tif_file_path, level):
     '''
         Identifies the slide and initializes OpenSlide object.
+
+        Returns:
+            - wsi_obj: OpenSlide object to the target WSI.
     '''
     try:
         wsi_obj = OpenSlide(tif_file_path)
@@ -126,24 +129,24 @@ def read_wsi(wsi_obj, level, mag_factor, sect):
 
     # level1 dimension
     width_whole, height_whole = wsi_obj.level_dimensions[level]
-    print(width_whole, height_whole)
+    print("level1 dimension (width, height): ", width_whole, height_whole)
 
     # section size after split
     width_split, height_split = width_whole // SPLIT, height_whole // SPLIT
-    print(width_split, height_split)
-
-    delta_x = int(sect[0]) * width_split
-    delta_y = int(sect[1]) * height_split
+    print("section size (width, height): ", width_split, height_split)
 
     '''
         Be aware that the first arg of read_region is a tuple of coordinates in 
         level0 reference frame.
     '''
+    delta_x = int(sect[0]) * width_split
+    delta_y = int(sect[1]) * height_split
+
     rgba_image_pil = wsi_obj.read_region((delta_x * mag_factor, \
                                           delta_y * mag_factor), \
                                           level, (width_split, height_split))
 
-    print("width, height:", rgba_image_pil.size)
+    print("rgba image dimension (width, height):", rgba_image_pil.size)
 
     '''
         !!! It should be noted that:
@@ -162,7 +165,7 @@ def read_wsi(wsi_obj, level, mag_factor, sect):
 
     time_e = time.time()
     
-    print("Time spent on loading: ", (time_e - time_s))
+    print("Time spent on loading WSI section into memory: ", (time_e - time_s))
     
     return rgba_image
 

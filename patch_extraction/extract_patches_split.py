@@ -516,10 +516,6 @@ def parse_annotation(anno_path, wsi_obj, level, mag_factor):
             polygon_list.append(polygon_)
     
     return polygon_list, anno_list
-
-'''
-    Draw extracted patches 
-'''
     
 
 '''
@@ -610,7 +606,6 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask,
 '''
     Utils
 '''
-
 def calculate_polygon(poly_, start_x, start_y, patch_width, 
                       patch_height, MultiPolygon_flag, draw=False):
     
@@ -846,7 +841,6 @@ def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_heigh
                                                patch_width, patch_height, MultiPolygon_flag)
         
     return inter_area, isect_
-    #, isect_x, isect_y
 
 '''
     Calculate tumor area.
@@ -1003,20 +997,17 @@ def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
 
     with open(cur_dir + 'negpaths.txt', "wb") as f:   
          pickle.dump(negative_patches_path, f)
-
-    # with open(cur_dir + 'pospaths.txt', "rb") as fp:   # Unpickling
-    #     b = pickle.load(fp)
     
     return pd_all, pd_tumor, positive_patches_path, negative_patches_path
-    
-# pd_all, pd_tumor, positive_patches_path, negative_patches_path = \
-# pre_analysis(slide_)   
 
 
 '''
+    Draw extracted patches.
 '''
+
 def draw_pospatch(patchpath, slidepath, annopath, level, \
     mag_factor,delta_x=0, delta_y=0):
+    
     '''
     
     '''
@@ -1026,12 +1017,24 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
     
     samplepos = Image.open(patchpath)
 
-    delta_x=int(patchpath.split('/')[-1].split('.')[0].split('_')[-2])
-    delta_y=int(patchpath.split('/')[-1].split('.')[0].split('_')[-1])
+    if delta_x ==0 and delta_y==0:
+        delta_x=int(patchpath.split('/')[-1].split('.')[0].split('_')[-2])
+        delta_y=int(patchpath.split('/')[-1].split('.')[0].split('_')[-1])
 
     print(delta_x, delta_y)
 
-    wsi_obj=openSlide_init(slidepath, level)
+    '''
+        Initialize OpenSlide object.
+    '''
+    try:
+        wsi_obj = OpenSlide(tif_file_path)
+
+    except OpenSlideUnsupportedFormatError:
+        print('Exception: OpenSlideUnsupportedFormatError')
+        return None
+    else:
+        pass
+
     polygon_list, anno_list = parse_annotation(annopath, \
                                                wsi_obj, level, mag_factor)
     local_anno = list()
@@ -1055,13 +1058,13 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
 
     sample_arr = np.array(samplepos) 
     sample_filled=cv2.drawContours(sample_arr, local_anno_arr, -1, 
-                                      (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=-1)
+                                  (0, 255, 0, 255),thickness=-1)
     
     patchfilled_img = Image.fromarray(sample_filled)
     
     sample_arr = np.array(samplepos) 
     sample_annotated=cv2.drawContours(sample_arr, local_anno_arr, -1, 
-                                      (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=3)
+                                     (0, 255, 0, 255),thickness=3)
 
     patchannotated_img = Image.fromarray(sample_annotated)
     

@@ -461,12 +461,16 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
     return patches, patches_coords, patches_coords_local
 
 '''
-Parse annotation
+    Parse xml annotation files.
 '''
 def parse_annotation(anno_path, wsi_obj, level, mag_factor):
     
     '''
     Args:
+        - anno_path:
+        - wsi_obj:
+        - level:
+        - mag_factor:
 
     Returns:
         
@@ -478,14 +482,14 @@ def parse_annotation(anno_path, wsi_obj, level, mag_factor):
 
     tree = ET.ElementTree(file = anno_path)
 
-    print('parsing annotation xml:')
+    print('parsing annotation xml: ')
 
 
     for an_i, crds in enumerate(tree.iter(tag='Coordinates')):
         '''
             In this loop, we process one seperate area of annotation at a time.
         '''
-        print("annotation area #%d", an_i)
+        # print("annotation area #%d", an_i)
 
         node_list = list()
         node_list_=list()
@@ -493,13 +497,11 @@ def parse_annotation(anno_path, wsi_obj, level, mag_factor):
         for coor in crds:
             '''
                 Here (x, y) uses global reference in the chosen level, which means
-                (x, y) indicates the location in the whole patch, rather than in splited sections.
+                (x, y) indicates the location in the whole patch, rather than in 
+                splited sections.
             '''
-            x = int(float(coor.attrib['X']))
-            y = int(float(coor.attrib['Y']))
-            
-            x /= mag_factor
-            y /= mag_factor
+            x = int(float(coor.attrib['X'])) / mag_factor
+            y = int(float(coor.attrib['Y'])) / mag_factor
 
             x = int(x)
             y = int(y)
@@ -523,7 +525,8 @@ def parse_annotation(anno_path, wsi_obj, level, mag_factor):
 '''
     Save patches to disk.
 '''
-def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, current_section):
+def save_to_disk(patches, patches_coords, tumor_dict, mask, 
+    slide_, level, current_section):
     
     '''
         The paths should be changed
@@ -539,6 +542,7 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
 
     patch_coords_dst = './dataset_patches/' + case_name + \
                        '/level' + str(level) + '/' + current_section + '/'
+
     array_file = patch_array_dst + 'patch_'
     
     coords_file = patch_coords_dst + 'patch_coords' + current_section + '.csv'
@@ -546,17 +550,16 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
 
     if not os.path.exists(patch_array_dst):
         os.makedirs(patch_array_dst)
-        print('mkdir', patch_array_dst)
+        print('mkdir ', patch_array_dst)
 
     if not os.path.exists(prefix_dir):
         os.makedirs(prefix_dir)
-        print('mkdir', prefix_dir)
+        print('mkdir ', prefix_dir)
     
     print('Path: ', array_file)
     print('Path: ', coords_file)
     print('Path: ', mask_file)
     print('Number of patches: ', len(patches_coords))
-    print(patches_coords[:5])
     
     '''
         Save coordinates to the disk. Here we use pandas DataFrame to organize 
@@ -569,14 +572,13 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
     if tumor_dict == None:
 
         df1_["tumor_area"] = [0 for coord in patches_coords]
-    
         df1_["tumor_%"] = [0 for coord in patches_coords]
     
     else:
         df1_["tumor_area"] = [tumor_dict[coord] for coord in patches_coords]
-    
         df1_["tumor_%"] = [tumor_dict[coord] / (PATCH_SIZE * PATCH_SIZE) \
                        for coord in patches_coords]
+
     df1_.to_csv(coords_file, encoding='utf-8', index=False)
     
     '''
@@ -585,6 +587,7 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
     # patch_whole = np.array(patches1).shape
 
     for i, patch_ in enumerate(patches):
+
         x_, y_ = patches_coords[i]
         patch_name = array_file + str(i) + '_' + str(x_) + '_' + str(y_)
         
@@ -599,7 +602,7 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask, slide_, level, curre
     # np.save(patch_whole, np.array(patches))
     
     '''
-    Save mask file to the disk
+        Save mask file to the disk. Uncomment if mask file is needed.
     '''
     # np.save(mask_file, mask)
 

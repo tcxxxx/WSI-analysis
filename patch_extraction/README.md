@@ -11,11 +11,12 @@ Currently, there are three files in the directory:
 from WSIAnalysis.patch_extraction.extract_patches_split import \
 openSlide_init, read_wsi, construct_colored_wsi, get_contours, \
 segmentation_hsv, construct_bags, save_to_disk, parse_annotation, \
-extract_all, preprocessingAndanalysis,\
-calculate_intersection, calculate_polygon, calc_tumorArea
+preprocessingAndanalysis, draw_pospatch, calculate_intersection, \
+calculate_polygon, calc_tumorArea, \
+extract_all_Plus
 ``````
 
-For convenience, all the functions are written in the *extract_patches_split.py* file. I am pretty sure there are much more elegant ways to write these codes, but for now I want to focus on the research problem and only make sure that these codes are robust enough to function :) Please do not hesitate to leave a comment if you have any advice or run into problems with these codes, I would be more than thankful. :)
+For convenience, all the functions are written in the *extract_patches_split.py* file. Please do not hesitate to leave a comment if you have any advice or run into problems with these codes. :)
 
 ----------------------------------------------------------------------------
 ### Examples:

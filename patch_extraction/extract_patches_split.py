@@ -525,9 +525,8 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask,
     slide_, level, current_section):
     
     '''
-        The paths should be changed
+        The paths should be changed to your own paths.
     '''
-    
     case_name = slide_.split('/')[-1].split('.')[0]
 
     prefix_dir = './dataset_patches/' + case_name + \
@@ -1029,7 +1028,7 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
         delta_x=int(patchpath.split('/')[-1].split('.')[0].split('_')[-2])
         delta_y=int(patchpath.split('/')[-1].split('.')[0].split('_')[-1])
 
-    print(delta_x, delta_y)
+    print("delta x y", delta_x, delta_y)
 
     '''
         Initialize OpenSlide object.
@@ -1283,6 +1282,16 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
 
 '''
     Back up function for multiprocessing.
+
+    Here is a simple example of patch extraction using the extract_all_Plus function above:
+
+    slidelist= ['patient_019_node_2','patient_019_node_3','patient_020_node_1',\
+                'patient_021_node_1','patient_021_node_4','patient_022_node_0']
+    p = multiprocessing.Pool(processes = multiprocessing.cpu_count()-2)
+    p.map(capextract, slidelist)
+    p.close()
+    p.join()
+
 '''
 def capextract(slide_name, dataset_dir='./dataset_patches/', level_dir='/level1/'):
 
@@ -1317,7 +1326,6 @@ def capextract(slide_name, dataset_dir='./dataset_patches/', level_dir='/level1/
 
         print('sec list 2\n\n')
         section_list2 = ['20', '21', '22', '23']
-#         section_list2 = ['21', '22', '23']
         img_sample_, wsi_img = extract_all_Plus(slide_path, anno_path, section_list2, pnflag, level=1)
         del img_sample_
         del wsi_img

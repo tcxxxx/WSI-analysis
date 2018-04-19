@@ -307,7 +307,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
     
     '''
     Args:
-        - wsi_obj:
+        - wsi_obj: 
         - wsi_rgb:
         - contours:
         - mask:
@@ -319,8 +319,10 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
 
     Returns: 
         - patches: lists of patches in numpy array: [PATCH_WIDTH, PATCH_HEIGHT, CHANNEL]
-        - patches_coords: coordinates of patches: (x_min, y_min). The bouding box of the patch
-        is (x_min, y_min, x_min + PATCH_WIDTH, y_min + PATCH_HEIGHT)
+
+        - patches_coords: coordinates of patches, (x_min, y_min). 
+        The bouding box of the patch is (x_min, y_min, x_min + PATCH_WIDTH, y_min + PATCH_HEIGHT)
+    
     '''
 
     patches = list()
@@ -374,11 +376,12 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
         
         '''
             !!!
-            step size could be tuned for better results.
+            step size could be tuned for better results, and step size will greatly affect 
+            the number of patches extracted.
         '''
 
-        X = np.arange(b_x_start, b_x_end, step=PATCH_SIZE // 2)
-        Y = np.arange(b_y_start, b_y_end, step=PATCH_SIZE // 2)        
+        X = np.arange(b_x_start, b_x_end, step=patch_size // 2)
+        Y = np.arange(b_y_start, b_y_end, step=patch_size // 2)        
         
         # print('ROI length:', len(X), len(Y))
         
@@ -387,22 +390,22 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
             for w_pos, x_width_ in enumerate(X):
 
                 # Read again from WSI object wastes tooooo much time.
-                # patch_img = wsi_.read_region((x_width_, y_height_), level, (PATCH_SIZE, PATCH_SIZE))
+                # patch_img = wsi_.read_region((x_width_, y_height_), level, (patch_size, patch_size))
                 
                 '''
                     !!! Take care of difference in shapes
                     Here, the shape of wsi_rgb is (HEIGHT, WIDTH, CHANNEL)
                     the shape of mask is (HEIGHT, WIDTH, CHANNEL)
                 '''
-                patch_arr = wsi_rgb[y_height_: y_height_ + PATCH_SIZE,\
-                                    x_width_:x_width_ + PATCH_SIZE,:]            
+                patch_arr = wsi_rgb[y_height_: y_height_ + patch_size,\
+                                    x_width_:x_width_ + patch_size,:]            
                 # print("read_region (scaled coordinates): ", x_width_, y_height_)
 
                 width_mask = x_width_
                 height_mask = y_height_                
                 
-                patch_mask_arr = mask[height_mask: height_mask + PATCH_SIZE, \
-                                      width_mask: width_mask + PATCH_SIZE]
+                patch_mask_arr = mask[height_mask: height_mask + patch_size, \
+                                      width_mask: width_mask + patch_size]
 
                 # print("Numpy mask shape: ", patch_mask_arr.shape)
                 # print("Numpy patch shape: ", patch_arr.shape)
@@ -416,7 +419,6 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
                     
 #                     f_ = ((patch_arr > PIXEL_TH) * 1)
 #                     f_ = (f_ * PIXEL_WHITE).astype('uint8')
-
 #                     if np.mean(f_) <= (PIXEL_TH + 40):
 #                         patches.append(patch_arr)
 #                         patches_coords.append((x_width_, y_height_))
@@ -432,13 +434,14 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
                         valid and selected.
                     '''
 
-                    if white_pixel_cnt >= ((PATCH_SIZE ** 2) * 0.5):
+                    if white_pixel_cnt >= ((patch_size ** 2) * 0.5):
 
-                        if patch_arr.shape == (PATCH_SIZE, PATCH_SIZE, CHANNEL):
+                        if (patch_arr.shape[0], patch_arr.shape[1])  == \
+                        (patch_size, patch_size):
+
                             patches.append(patch_arr)
                             patches_coords.append((x_width_ + delta_x , 
                                                    y_height_ + delta_y))
-
                             patches_coords_local.append((x_width_, y_height_))
 
                             # print("global:", x_width_ + delta_x, y_height_ + delta_y)
@@ -453,7 +456,7 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
     # print("Time spent on patch extraction: ",  (end - start))
 
     # patches_ = [patch_[:,:,:3] for patch_ in patches] 
-    print("Total number of patches extracted:", len(patches))
+    print("Total number of patches extracted: ", len(patches))
     
     return patches, patches_coords, patches_coords_local
 

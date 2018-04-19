@@ -876,11 +876,19 @@ def preprocessingAndanalysis(slide_name, section_list, positivethresh, \
     
     '''
     Args:
-        slide_name: for example, 'patient_015_node_2',
+        - slide_name: for example, 'patient_015_node_2',
         In current case, DO NOT add '.tif' in slide_name;
-        section_list: the sections to be analyzed;
-        dataset_dir: dir / path;
-        positivethresh: discard patches in which tumor area is too small.
+        
+        - section_list: the sections to be analyzed. For example:
+            
+        section_list = ['00', '01', '02', '03', \
+                        '10', '11', '12', '13', \
+                        '20', '21', '22', '23', \
+                        '30', '31', '32', '33']        
+
+        - dataset_dir: directory to datasets;
+
+        - positivethresh: discard patches in which tumor area is too small;
 
     '''
     
@@ -1067,7 +1075,7 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
                                      (0, 255, 0, 255),thickness=3)
 
     patchannotated_img = Image.fromarray(sample_annotated)
-    
+
     return patchfilled_img, patchannotated_img
 
 
@@ -1114,12 +1122,11 @@ def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
 
         rgba_image = read_wsi(wsi_obj, level, mag_factor, sect)
         wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_image)
-
-        print('Transformed shape: (height, width, channel)')
-        print("WSI HSV shape: ", wsi_hsv_.shape)
-        print("WSI RGB shape: ", wsi_rgb_.shape)
-        print("WSI GRAY shape: ", wsi_gray_.shape)
-        print('\n')
+        # print('Transformed shape: (height, width, channel)')
+        # print("WSI HSV shape: ", wsi_hsv_.shape)
+        # print("WSI RGB shape: ", wsi_rgb_.shape)
+        # print("WSI GRAY shape: ", wsi_gray_.shape)
+        # print('\n')
 
         del rgba_image
         gc.collect()
@@ -1157,31 +1164,36 @@ def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
     
     return patches_all
 
-
-
-'''
-    Updated version of extract_all(), on 2018-04-15
-
-    added analysis and visualization part to the whole pipeline.
-'''
-
 def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
 
     '''
+    Args:
+        - slide_path: Path to target slide, 
+            for example: ../data-wsi/camelyon17/training/patient_017_node_2.tif
     
+        - anno_path: Path to the annotation xml of the target slide, 
+            for example: ../data-wsi/camelyon17/lesion_annotations/patient_017_node_2.xml
+    
+        - level: Magnification level;
+        
+        - pnflag: Boolean, which indicates whether it is a positive one or not
+    
+    Returns: 
+        To-do.
     '''
     
     mag_factor = pow(2, level)
     
-    # !!! should be changed soon.
     slide_name = slide_path.split('/')[-1].split('.')[0]
     
     wsi_obj = openSlide_init(slide_path, level)
 
     if pnflag:
+        '''
+            if this slide is an annotated positive slide.
+        '''
         polygon_list, anno_list = \
-        parse_annotation(anno_path, wsi_obj, \
-                         level, mag_factor)
+        parse_annotation(anno_path, wsi_obj, level, mag_factor)
 
     time_all = 0
 
@@ -1193,12 +1205,6 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
 
         rgba_image = read_wsi(wsi_obj, level, mag_factor, sect)
         wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_image)
-
-        print('Transformed shape: (height, width, channel)')
-        # print("WSI HSV shape: ", wsi_hsv_.shape)
-        # print("WSI RGB shape: ", wsi_rgb_.shape)
-        # print("WSI GRAY shape: ", wsi_gray_.shape)
-        # print('\n')
 
         del rgba_image
         gc.collect()
@@ -1232,11 +1238,7 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
         end = time.time()
         time_all += end - start
         print("Time spent on section", sect,  (end - start))
-        
-    # pd_all, pd_tumor, positive_patches_path, negative_patches_path = \
-    # preprocessingAndanalysis(slide_name, section_list, positivethresh=0.1, \
-    #                          dataset_dir='./dataset_patches/', level_dir='/level1/')
-    
+            
     samplelevel=7
     samplemag_factor=pow(2, samplelevel)
 
@@ -1271,14 +1273,13 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
             anno_arr.append(np.array(arr))
 
         _=cv2.drawContours(wsi_arr, anno_arr, -1, \
-                          (PIXEL_BLACK, PIXEL_WHITE, PIXEL_BLACK, PIXEL_WHITE),thickness=2)
+                          (0, 255, 0, 255),thickness=2)
 
     img_sample_ = Image.fromarray(wsi_arr[:,:,:3])
     
     print('total time: ', time_all)
 
     return img_sample_, wsi_img
-
 
 '''
     Back up function for multiprocessing.

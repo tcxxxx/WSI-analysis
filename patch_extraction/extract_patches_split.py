@@ -1031,7 +1031,7 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
         Initialize OpenSlide object.
     '''
     try:
-        wsi_obj = OpenSlide(tif_file_path)
+        wsi_obj = OpenSlide(slidepath)
 
     except OpenSlideUnsupportedFormatError:
         print('Exception: OpenSlideUnsupportedFormatError')

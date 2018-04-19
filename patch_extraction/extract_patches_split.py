@@ -181,11 +181,15 @@ def construct_colored_wsi(rgba_):
         Args:
             - rgba_: Image to be processed, NumPy array type.
 
+        Returns:
+            - wsi_rgb_: RGB image, NumPy array type.
+            - wsi_gray_: Grayscale image, NumPy array type.
+            - wsi_hsv_: HSV image, NumPy array type.
+
     '''
     r_, g_, b_, a_ = cv2.split(rgba_)
     
     wsi_rgb_ = cv2.merge((r_, g_, b_))
-    
     wsi_gray_ = cv2.cvtColor(wsi_rgb_,cv2.COLOR_RGB2GRAY)
     wsi_hsv_ = cv2.cvtColor(wsi_rgb_, cv2.COLOR_RGB2HSV)
     
@@ -209,12 +213,11 @@ def get_contours(cont_img, rgb_image_shape):
         !!! It should be noticed that the shape of mask array is: (HEIGHT, WIDTH, CHANNEL).
     '''
     
-    print('contour image: ',cont_img.shape)
+    print('contour image dimension: ',cont_img.shape)
     
     contour_coords = []
     _, contours, _ = cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # print(contours)
     boundingBoxes = [cv2.boundingRect(c) for c in contours]
 
     for contour in contours:
@@ -222,7 +225,7 @@ def get_contours(cont_img, rgb_image_shape):
         
     mask = np.zeros(rgb_image_shape, np.uint8)
     
-    print('mask shape', mask.shape)
+    print('mask image dimension: ', mask.shape)
     cv2.drawContours(mask, contours, -1, \
                     (PIXEL_WHITE, PIXEL_WHITE, PIXEL_WHITE),thickness=-1)
     
@@ -255,15 +258,17 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
 
         The only difference between $contours and $contour_coords is in shape.
     '''
-    print("HSV segmentation")
+    print("HSV segmentation step")
     contour_coord = []
     
     '''
         Here we could tune for better results.
         Currently 20 and 200 are lower and upper threshold for H, S, V values, respectively. 
     
-        !!! It should be noted that the threshold values here highly depends on the dataset itself.
-        Thresh value could vary a lot among different datasets.
+        !!! It should be noted that the threshold values here are highly dependent on 
+        the dataset itself. Thresh values could vary a lot among different datasets.
+
+        How to find the thresholding values that fit the dataset most is an important topic.
     '''
     lower_ = np.array([20,20,20])
     upper_ = np.array([200,200,200]) 
@@ -271,15 +276,8 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
     # HSV image threshold
     thresh = cv2.inRange(wsi_hsv_, lower_, upper_)
     
-    try:
-        print("thresh shape:", thresh.shape)
-    except:
-        print("thresh shape:", thresh.size)
-    else:
-        pass
-    
     '''
-        Closing
+        Closing Step
     '''
     # print("Closing step: ")
     close_kernel = np.ones((15, 15), dtype=np.uint8) 
@@ -287,7 +285,7 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
     # print("image_close size", image_close.shape)
 
     '''
-        Openning
+        Openning Step
     ''' 
     # print("Openning step: ")
     open_kernel = np.ones((5, 5), dtype=np.uint8)
@@ -302,13 +300,22 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
 
 
 '''
-    Extract Valid patches.
+    Extract patches which are considered valid in the segmentation step. 
 '''
-def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE, sect):
+def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
+                   mag_factor, sect, patch_size, split_num):
     
     '''
     Args:
-        To-do.
+        - wsi_obj:
+        - wsi_rgb:
+        - contours:
+        - mask:
+        - level:
+        - mag_factor:
+        - sect
+        - patch_size:
+        - split_num: 
 
     Returns: 
         - patches: lists of patches in numpy array: [PATCH_WIDTH, PATCH_HEIGHT, CHANNEL]
@@ -324,11 +331,11 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, mag_factor, PATCH_SI
     
     # level1 dimension
     width_whole, height_whole = wsi_obj.level_dimensions[level]
-    width_split, height_split = width_whole // SPLIT, height_whole // SPLIT
+    width_split, height_split = width_whole // split_num, height_whole // split_num
     # print(width_whole, height_whole)
 
     # section size after split
-    print(int(sect[0]), int(sect[1]))
+    # print(int(sect[0]), int(sect[1]))
     delta_x = int(sect[0]) * width_split
     delta_y = int(sect[1]) * height_split
     # print("delta:", delta_x, delta_y)

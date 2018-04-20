@@ -463,12 +463,11 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
 '''
     Parse xml annotation files.
 '''
-def parse_annotation(anno_path, wsi_obj, level, mag_factor):
+def parse_annotation(anno_path, level, mag_factor):
     
     '''
     Args:
         - anno_path:
-        - wsi_obj:
         - level:
         - mag_factor:
 

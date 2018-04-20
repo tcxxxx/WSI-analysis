@@ -1026,20 +1026,7 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
 
     print("delta x y", delta_x, delta_y)
 
-    '''
-        Initialize OpenSlide object.
-    '''
-    try:
-        wsi_obj = OpenSlide(slidepath)
-
-    except OpenSlideUnsupportedFormatError:
-        print('Exception: OpenSlideUnsupportedFormatError')
-        return None
-    else:
-        pass
-
-    polygon_list, anno_list = parse_annotation(annopath, \
-                                               wsi_obj, level, mag_factor)
+    polygon_list, anno_list = parse_annotation(annopath, level, mag_factor)
     local_anno = list()
 
     for area_ in anno_list:
@@ -1106,8 +1093,7 @@ def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
     wsi_obj=openSlide_init(slide_path, level)
 
     if pnflag:
-        polygon_list, anno_list = \
-        parse_annotation(anno_path, wsi_obj, level, mag_factor)
+        polygon_list, anno_list = parse_annotation(anno_path, level, mag_factor)
 
     time_all = 0
 
@@ -1187,8 +1173,7 @@ def extract_all_Plus(slide_path, anno_path, section_list, pnflag=True, level=1):
         '''
             if this slide is an annotated positive slide.
         '''
-        polygon_list, anno_list = \
-        parse_annotation(anno_path, wsi_obj, level, mag_factor)
+        polygon_list, anno_list = parse_annotation(anno_path, level, mag_factor)
 
     time_all = 0
 

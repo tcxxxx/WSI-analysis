@@ -1139,7 +1139,7 @@ def extract_all(slide_path, anno_path, level, mag_factor, pnflag=True):
         
         end = time.time()
         time_all += end - start
-        print("Time spent on section", sect,  (end - start))
+        print("Time spent on section", sect,  (end - start), '\n')
     
     print('total time: ', time_all)    
     

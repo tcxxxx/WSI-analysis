@@ -380,8 +380,10 @@ def construct_bags(wsi_obj, wsi_rgb, contours, mask, level, \
             the number of patches extracted.
         '''
 
-        X = np.arange(b_x_start, b_x_end, step=patch_size // 2)
-        Y = np.arange(b_y_start, b_y_end, step=patch_size // 2)        
+        # step size: PATCH_SIZE / 2 -> PATCH_SIZE
+
+        X = np.arange(b_x_start, b_x_end, step=patch_size)
+        Y = np.arange(b_y_start, b_y_end, step=patch_size)        
         
         # print('ROI length:', len(X), len(Y))
         

@@ -604,7 +604,7 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask,
     Utils
 '''
 def calculate_polygon(poly_, start_x, start_y, patch_width, 
-                      patch_height, MultiPolygon_flag, draw=False):
+                      patch_height, MultiPolygon_flag, draw=True):
     
     """Calculates the area of intersection one polygon area.
     
@@ -716,7 +716,7 @@ def calculate_polygon(poly_, start_x, start_y, patch_width,
     return inter_area, isect_
 
 
-def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_height=500, draw=False):
+def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_height=500, draw=True):
     
     """Calculates the whole intersection area (patch ∩ tumor area).
     
@@ -1041,15 +1041,15 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
             x_ = coords[0] - delta_x
             y_ = coords[1] - delta_y
 
-            if x_ < 0:
-                x_ = 0
-            if y_ < 0:
-                y_ = 0
+            # if x_ < 0:
+            #     x_ = 0
+            # if y_ < 0:
+            #     y_ = 0
 
-            if x_ > patch_size:
-                x_ = patch_size
-            if y_ > patch_size:
-                y_ = patch_size
+            # if x_ > patch_size:
+            #     x_ = patch_size
+            # if y_ > patch_size:
+            #     y_ = patch_size
 
             tmp.append((x_, y_))
         local_anno.append(tmp)

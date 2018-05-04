@@ -604,7 +604,7 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask,
     Utils
 '''
 def calculate_polygon(poly_, start_x, start_y, patch_width, 
-                      patch_height, MultiPolygon_flag, draw=True):
+                      patch_height, MultiPolygon_flag, draw=False):
     
     """Calculates the area of intersection one polygon area.
     
@@ -716,7 +716,7 @@ def calculate_polygon(poly_, start_x, start_y, patch_width,
     return inter_area, isect_
 
 
-def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_height=500, draw=True):
+def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_height=500, draw=False):
     
     """Calculates the whole intersection area (patch ∩ tumor area).
     

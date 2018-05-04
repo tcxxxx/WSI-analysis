@@ -1021,6 +1021,7 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
     
     PIXEL_BLACK = 0
     PIXEL_WHITE = 255
+    patch_size=500
     
     samplepos = Image.open(patchpath)
 
@@ -1039,6 +1040,16 @@ def draw_pospatch(patchpath, slidepath, annopath, level, \
 
             x_ = coords[0] - delta_x
             y_ = coords[1] - delta_y
+
+            if x_ < 0:
+                x_ = 0
+            if y_ < 0:
+                y_ = 0
+
+            if x_ > patch_size:
+                x_ = patch_size
+            if y_ > patch_size:
+                y_ = patch_size
 
             tmp.append((x_, y_))
         local_anno.append(tmp)

@@ -489,7 +489,7 @@ def parse_annotation(anno_path, level, mag_factor):
         '''
         # print("annotation area #%d", an_i)
 
-        node_list = list()
+        # node_list = list()
         node_list_=list()
 
         for coor in crds:
@@ -504,7 +504,7 @@ def parse_annotation(anno_path, level, mag_factor):
             x = int(x)
             y = int(y)
 
-            node_list.append(Point(x,y))
+            # node_list.append(Point(x,y))
             node_list_.append((x,y))
         
         anno_list.append(node_list_)

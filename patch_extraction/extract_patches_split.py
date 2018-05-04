@@ -859,7 +859,7 @@ def calc_tumorArea(polygon_list, patches_coords):
 
             area_, _ = calculate_intersection(poly_, x_, y_)
             area_sum += area_
-            print((x_, y_), area_)
+            # print((x_, y_), area_)
 
         if int(area_sum) > 0:
             print((x_, y_), "sum:", area_sum / (patch_size * patch_size), area_sum)

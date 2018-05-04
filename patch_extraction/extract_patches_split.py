@@ -845,6 +845,8 @@ def calculate_intersection(poly_, start_x, start_y, patch_width=500, patch_heigh
 def calc_tumorArea(polygon_list, patches_coords):
     '''
     '''
+    patch_size=500
+
     area_list = dict()
 
     for coords in patches_coords:
@@ -857,10 +859,10 @@ def calc_tumorArea(polygon_list, patches_coords):
 
             area_, _ = calculate_intersection(poly_, x_, y_)
             area_sum += area_
+            print((x_, y_), area_)
 
         if int(area_sum) > 0:
-            print((x_, y_), ":", area_sum / (500*500), area_sum)
-            
+            print((x_, y_), "sum:", area_sum / (patch_size * patch_size), area_sum)
             area_list[coords] = int(area_sum)
 
         else:

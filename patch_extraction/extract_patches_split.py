@@ -863,6 +863,10 @@ def calc_tumorArea(polygon_list, patches_coords):
 
         if int(area_sum) > 0:
             print((x_, y_), "sum:", area_sum / (patch_size * patch_size), area_sum)
+
+            if area_sum >= patch_size * patch_size:
+                area_sum = patch_size * patch_size
+
             area_list[coords] = int(area_sum)
 
         else:

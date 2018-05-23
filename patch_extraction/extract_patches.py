@@ -435,7 +435,8 @@ def save_to_disk(patches, patches_coords, mask, slide_, level):
     '''
     Save mask file to the disk
     '''
-    np.save(mask_file, mask)
+    mask_img = Image.fromarray(mask)
+    mask_img.save(mask_file + '.jpeg')
 
 
 '''

@@ -597,7 +597,8 @@ def save_to_disk(patches, patches_coords, tumor_dict, mask,
     '''
         Save mask file to the disk. Uncomment if mask file is needed.
     '''
-    # np.save(mask_file, mask)
+    mask_img = Image.fromarray(mask)
+    mask_img.save(mask_file + '.jpeg')
 
 
 '''

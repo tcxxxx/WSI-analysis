@@ -12,7 +12,7 @@ from tensorflow.contrib.data import Dataset
 from tensorflow.python.framework import dtypes
 from tensorflow.python.framework.ops import convert_to_tensor
 
-IMAGENET_MEAN = tf.constant([123.68, 116.779, 103.939], dtype=tf.float32)
+# IMAGENET_MEAN = tf.constant([123.68, 116.779, 103.939], dtype=tf.float32)
 
 class ImageDataGenerator(object):
     """Wrapper class around the new Tensorflows dataset pipeline.

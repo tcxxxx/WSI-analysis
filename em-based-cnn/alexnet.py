@@ -13,7 +13,6 @@ finetuning script:
 Link:
 - https://github.com/fastai/courses/blob/master/deeplearning1/nbs/vgg16.py
 
-
 The pretrained weights can be downloaded here and should be placed in the same
 folder as this file:
 - http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/
@@ -23,7 +22,6 @@ folder as this file:
 
 import tensorflow as tf
 import numpy as np
-
 
 class AlexNet(object):
     """Implementation of the AlexNet."""
@@ -99,7 +97,7 @@ class AlexNet(object):
         'biases') we need a special load function
 
         Example: 
-            model.load_initial_weights(sess, trainablev=True, layersList=['fc8'])
+            model.load_initial_weights(sess, trainablev=True, skipLayers=['fc8'])
         """
 
         # Load the weights into memory

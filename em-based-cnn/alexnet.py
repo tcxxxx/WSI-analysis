@@ -18,6 +18,7 @@ folder as this file:
 - http://www.cs.toronto.edu/~guerzhoy/tf_alexnet/
 
 @author: Frederik Kratzert (contact: f.kratzert(at)gmail.com)
+@modifier: Tiancheng Xu
 """
 
 import tensorflow as tf

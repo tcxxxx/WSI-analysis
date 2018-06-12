@@ -3,7 +3,9 @@
 # @author: Frederik Kratzert
 # @modifier: Tiancheng Xu
 
-"""Containes a helper class for image input pipelines in tensorflow."""
+"""
+    A helper class for image input pipelines in tensorflow.
+"""
 
 import tensorflow as tf
 import numpy as np

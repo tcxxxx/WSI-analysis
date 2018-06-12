@@ -2,6 +2,8 @@
 	Python 3.5
 '''
 
+# code for 1st stage CNN training
+
 import os
 import numpy as np
 import time

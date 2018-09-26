@@ -1,12 +1,14 @@
-## WSIAnalysis
+## Whole-Slide Image Analysis
+-----------------
+> Please let me know if you have any concerns. I will try my best to complete the codes and docs soon.
 -----------------
 ### Background <br>
-Whole-slide images(WSI) are gigapixel high-resolution histopathology images. Traditional analysis procedures could not work efficiently if directly applied to WSIs. Most successful solutions adopted **patch-based** paradigm. 
+Whole-Slide images(WSI) are gigapixel high-resolution histopathology images. Traditional analysis procedures could not work efficiently if directly applied to WSIs. Most successful solutions adopted **patch-based** paradigm. 
 
 ----------------------------------
 
 ### Overview <br>
-This repo currently contains codes for patch extraction (from WSI) and will be updated constantly. :) (Codes for classification and segmentation will be added when they are ready).
+This repo currently contains codes for patch extraction (from WSI) and will be updated constantly. :) (Deep-learning based codes for classification and segmentation will be added when they are ready).
 
 #### Patch extraction <br>
 There are several tricky parts when extracting patches from WSIs:

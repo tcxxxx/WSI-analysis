@@ -13,25 +13,24 @@ from PIL import Image
 from openslide import OpenSlide, OpenSlideUnsupportedFormatError
 
 import gc
+import pdb
 
 '''
-    Global variables / constants
+    Read global variables / constants from config.txt file.
 '''
-PATCH_SIZE = 500
-CHANNEL = 3
-CLASS_NUM = 2
+f = open('config.txt','r')
+for line in f:
+    line = line.strip('\n')                             
+    var_name,value = line.split('=')                          # Split value and variable by =
+    var_name = var_name.strip()                               # strip whitespace if present
+    value = value.strip()
+    if '.' in value:                                          # check if value is float
+        exec('%s = %f' %( var_name, float(value) ) )
+    else:
+        exec('%s = %d' %( var_name, int(value) ) )
 
-DROPOUT = 0.5
-
-THRESH = 90
-
-PIXEL_WHITE = 255
-PIXEL_TH = 200
-PIXEL_BLACK = 0
-
-level = 3
 mag_factor = pow(2, level)
-
+verboseprint = print if verbose else lambda *a, **k: None    # As per https://stackoverflow.com/a/5980173
 '''
     !!!! It should be noticed with great caution that:
 
@@ -81,7 +80,7 @@ def read_wsi(tif_file_path, level):
         # is not skipped.
 
         rgba_image_pil = wsi_image.read_region((0, 0), level, (slide_w_, slide_h_))
-        print("width, height:", rgba_image_pil.size)
+        verboseprint("width, height:", rgba_image_pil.size)
 
         '''
             !!! It should be noted that:
@@ -96,7 +95,7 @@ def read_wsi(tif_file_path, level):
             The A channel is unnecessary for now and could be dropped.
         '''
         rgba_image = np.asarray(rgba_image_pil)
-        print("transformed:", rgba_image.shape)
+        verboseprint("transformed:", rgba_image.shape)
         
     except OpenSlideUnsupportedFormatError:
         print('Exception: OpenSlideUnsupportedFormatError')
@@ -104,7 +103,7 @@ def read_wsi(tif_file_path, level):
 
     time_e = time.time()
     
-    print("Time spent on loading", tif_file_path, ": ", (time_e - time_s))
+    verboseprint("Time spent on loading", tif_file_path, ": ", (time_e - time_s))
     
     return wsi_image, rgba_image, (slide_w_, slide_h_)
 
@@ -148,10 +147,10 @@ def get_contours(cont_img, rgb_image_shape):
         !!! It should be noticed that the shape of mask array is: (HEIGHT, WIDTH, CHANNEL).
     '''
     
-    print('contour image: ',cont_img.shape)
+    verboseprint('contour image: ',cont_img.shape)
     
     contour_coords = []
-    _, contours, _ = cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hiers = cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
     # print(contours)
     boundingBoxes = [cv2.boundingRect(c) for c in contours]
@@ -161,7 +160,7 @@ def get_contours(cont_img, rgb_image_shape):
         
     mask = np.zeros(rgb_image_shape, np.uint8)
     
-    print('mask shape', mask.shape)
+    verboseprint('mask shape', mask.shape)
     cv2.drawContours(mask, contours, -1, \
                     (PIXEL_WHITE, PIXEL_WHITE, PIXEL_WHITE),thickness=-1)
     
@@ -194,7 +193,7 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
 
         The only difference between $contours and $contour_coords is in shape.
     '''
-    print("HSV segmentation: ")
+    verboseprint("HSV segmentation: ")
     contour_coord = []
     
     '''
@@ -211,29 +210,29 @@ def segmentation_hsv(wsi_hsv_, wsi_rgb_):
     thresh = cv2.inRange(wsi_hsv_, lower_, upper_)
     
     try:
-        print("thresh shape:", thresh.shape)
+        verboseprint("thresh shape:", thresh.shape)
     except:
-        print("thresh shape:", thresh.size)
+        verboseprint("thresh shape:", thresh.size)
     else:
         pass
     
     '''
         Closing
     '''
-    print("Closing step: ")
+    verboseprint("Closing step: ")
     close_kernel = np.ones((15, 15), dtype=np.uint8) 
     image_close = cv2.morphologyEx(np.array(thresh),cv2.MORPH_CLOSE, close_kernel)
-    print("image_close size", image_close.shape)
+    verboseprint("image_close size", image_close.shape)
 
     '''
         Openning
     ''' 
-    print("Openning step: ")
+    verboseprint("Openning step: ")
     open_kernel = np.ones((5, 5), dtype=np.uint8)
     image_open = cv2.morphologyEx(image_close, cv2.MORPH_OPEN, open_kernel)
-    print("image_open size", image_open.size)
+    verboseprint("image_open size", image_open.size)
 
-    print("Getting Contour: ")
+    verboseprint("Getting Contour: ")
     bounding_boxes, contour_coords, contours, mask \
     = get_contours(np.array(image_open), wsi_rgb_.shape)
       
@@ -275,7 +274,7 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
     for i, box_ in enumerate(contours_):
 
         box_ = cv2.boundingRect(np.squeeze(box_))
-        print('region', i)
+        verboseprint('region', i)
         
         '''
 
@@ -300,7 +299,7 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
         X = np.arange(b_x_start, b_x_end, step=PATCH_SIZE // 2)
         Y = np.arange(b_y_start, b_y_end, step=PATCH_SIZE // 2)        
         
-        print('ROI length:', len(X), len(Y))
+        verboseprint('ROI length:', len(X), len(Y))
         
         for h_pos, y_height_ in enumerate(Y):
         
@@ -316,7 +315,7 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
                 '''
                 patch_arr = wsi_rgb[y_height_: y_height_ + PATCH_SIZE,\
                                     x_width_:x_width_ + PATCH_SIZE,:]            
-                print("read_region (scaled coordinates): ", x_width_, y_height_)
+                verboseprint("read_region (scaled coordinates): ", x_width_, y_height_)
 
                 width_mask = x_width_
                 height_mask = y_height_                
@@ -324,8 +323,8 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
                 patch_mask_arr = mask[height_mask: height_mask + PATCH_SIZE, \
                                       width_mask: width_mask + PATCH_SIZE]
 
-                print("Numpy mask shape: ", patch_mask_arr.shape)
-                print("Numpy patch shape: ", patch_arr.shape)
+                verboseprint("Numpy mask shape: ", patch_mask_arr.shape)
+                verboseprint("Numpy patch shape: ", patch_arr.shape)
 
                 try:
                     bitwise_ = cv2.bitwise_and(patch_arr, patch_mask_arr)
@@ -357,14 +356,14 @@ def construct_bags(wsi_, wsi_rgb, contours, mask, level, mag_factor, PATCH_SIZE)
                         if patch_arr.shape == (PATCH_SIZE, PATCH_SIZE, CHANNEL):
                             patches.append(patch_arr)
                             patches_coords.append((x_width_, y_height_))
-                            print(x_width_, y_height_)
-                            print('Saved\n')
+                            verboseprint(x_width_, y_height_)
+                            verboseprint('Saved\n')
 
                     else:
-                        print('Did not save\n')
+                        verboseprint('Did not save\n')
 
     end = time.time()
-    print("Time spent on patch extraction: ",  (end - start))
+    verboseprint("Time spent on patch extraction: ",  (end - start))
 
     # patches_ = [patch_[:,:,:3] for patch_ in patches] 
     print("Total number of patches extracted:", len(patches))
@@ -392,17 +391,17 @@ def save_to_disk(patches, patches_coords, mask, slide_, level):
 
     if not os.path.exists(patch_array_dst):
         os.makedirs(patch_array_dst)
-        print('mkdir', patch_array_dst)
+        verboseprint('mkdir', patch_array_dst)
 
     if not os.path.exists(prefix_dir):
         os.makedirs(prefix_dir)
-        print('mkdir', prefix_dir)
+        verboseprint('mkdir', prefix_dir)
     
-    print('Path: ', array_file)
-    print('Path: ', coords_file)
-    print('Path: ', mask_file)
-    print('Number of patches: ', len(patches_coords))
-    print(patches_coords[:5])
+    verboseprint('Path: ', array_file)
+    verboseprint('Path: ', coords_file)
+    verboseprint('Path: ', mask_file)
+    verboseprint('Number of patches: ', len(patches_coords))
+    verboseprint(patches_coords[:5])
     
     '''
         Save coordinates to the disk. Here we use pandas DataFrame to organize 
@@ -456,13 +455,13 @@ def extract_(slide_, level, mag_factor):
     start = time.time()
     
     wsi_, rgba_, shape_ = read_wsi(slide_, level)
-    wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba3_)
+    wsi_rgb_, wsi_gray_, wsi_hsv_ = construct_colored_wsi(rgba_)
 
     print('Transformed shape: (height, width, channel)')
-    print("WSI HSV shape: ", wsi_hsv_.shape)
+    verboseprint("WSI HSV shape: ", wsi_hsv_.shape)
     print("WSI RGB shape: ", wsi_rgb_.shape)
-    print("WSI GRAY shape: ", wsi_gray_.shape)
-    print('\n')
+    verboseprint("WSI GRAY shape: ", wsi_gray_.shape)
+    verboseprint('\n')
 
     del rgba_
     gc.collect()

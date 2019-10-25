@@ -150,7 +150,7 @@ def get_contours(cont_img, rgb_image_shape):
     verboseprint('contour image: ',cont_img.shape)
     
     contour_coords = []
-   _, contours, _ = cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hiers = cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
     # print(contours)
     boundingBoxes = [cv2.boundingRect(c) for c in contours]

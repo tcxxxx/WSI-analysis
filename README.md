@@ -1,7 +1,5 @@
 ## Whole-Slide Image Analysis
 -----------------
-> Please let me know if you have any concerns. I will try my best to complete the codes and docs soon.
------------------
 ### Background <br>
 Whole-Slide images(WSI) are gigapixel high-resolution histopathology images. Traditional analysis procedures could not work efficiently if directly applied to WSIs. Most successful solutions adopted **patch-based** paradigm. 
 

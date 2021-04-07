@@ -20,8 +20,8 @@ For convenience, all the functions are written in the *extract_patches_split.py*
 
 ----------------------------------------------------------------------------
 ### Examples:
-- [x] [HERE](http://119.29.151.114/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
-- [x] [HERE](http://119.29.151.114/patch_extraction_level1(20180419).html) is an example of level**1** patch-extraction pipeline (updated on 2018.04.19). <br> It should be noticed that the functions of processing level**1** WSI (in **extract_patches_split.py**) are somewhat different from the ones in **extract_patches.py**, which were designed for images whose level >= 3.
+- [x] [HERE](./examples/patch_extraction_level3example.html) is an example of level**3** patch-extraction pipeline. Jupyter notebook file is also available in this directory. 
+- [x] [HERE](./examples/patch_extraction_level1(20180419).html) is an example of level**1** patch-extraction pipeline (updated on 2018.04.19). <br> It should be noticed that the functions of processing level**1** WSI (in **extract_patches_split.py**) are somewhat different from the ones in **extract_patches.py**, which were designed for images whose level >= 3.
 
 ---------------------------------------------------------------------------
 There are several tricky parts when extracting patches from WSIs:

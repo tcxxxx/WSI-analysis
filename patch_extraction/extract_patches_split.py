@@ -216,7 +216,7 @@ def get_contours(cont_img, rgb_image_shape):
     print('contour image dimension: ',cont_img.shape)
     
     contour_coords = []
-    contours, f = cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(cont_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     boundingBoxes = [cv2.boundingRect(c) for c in contours]
 
